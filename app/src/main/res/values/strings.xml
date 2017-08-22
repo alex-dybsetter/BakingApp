@@ -1,0 +1,13 @@
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+    <string name="app_name">Baking Time</string>
+
+    <!--Display this string when there is no internet connectivity-->
+    <string name="no_connection">No internet connection.</string>
+    <!--Display this string when no recipes are found from the API-->
+    <string name="no_results">No recipes found.</string>
+
+    <!--The number of servings in a recipe.-->
+    <string name="servings">
+        <xliff:g id="mins">%1$x</xliff:g> servings
+    </string>
+</resources>
