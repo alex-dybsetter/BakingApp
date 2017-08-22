@@ -61,12 +61,17 @@ public class MainActivityFragment extends Fragment
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        Recipe[] testList = new Recipe[5];
+        Recipe[] testList = new Recipe[10];
         testList[0] = new Recipe("Fried green tomatoes", 5);
         testList[1] = new Recipe("Ravioli", 4);
         testList[2] = new Recipe("Chocolate cake", 8);
         testList[3] = new Recipe("Empanadas", 16);
         testList[4] = new Recipe("Apple pie", 6);
+        testList[5] = new Recipe("Fried green tomatoes", 5);
+        testList[6] = new Recipe("Ravioli", 4);
+        testList[7] = new Recipe("Chocolate cake", 8);
+        testList[8] = new Recipe("Empanadas", 16);
+        testList[9] = new Recipe("Apple pie", 6);
 
         mAdapter = new RecipeAdapter(getActivity(), testList);
         mAdapter.setClickListener(this);
