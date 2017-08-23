@@ -25,6 +25,8 @@
             android:layout_below="@+id/recipe_name_tv"
             android:layout_alignParentRight="true"/>
 
+        <!--TODO: Add share button-->
+        <!--TODO: Add favorite button-->
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

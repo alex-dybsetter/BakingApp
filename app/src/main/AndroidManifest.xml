@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.alexblass.bakingapp">
 
+    <!-- Request internet to access movie api database -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- Request permission to access network state to verify Internet connection -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 

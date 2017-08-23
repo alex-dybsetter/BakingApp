@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.utilities.RecipeAdapter;
+import net.alexblass.bakingapp.utilities.RecipeLoader;
 
 /**
  * This fragment allows users to view a list of recipes
@@ -44,6 +45,9 @@ public class MainActivityFragment extends Fragment
     // A RecipeAdapter to display the Recipes correctly
     private RecipeAdapter mAdapter;
 
+    // Saved position of the recycler view
+    private int mPosition = RecyclerView.NO_POSITION;
+
     // Empty constructor
     public MainActivityFragment() {
     }
@@ -61,19 +65,7 @@ public class MainActivityFragment extends Fragment
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        Recipe[] testList = new Recipe[10];
-        testList[0] = new Recipe("Fried green tomatoes", 5);
-        testList[1] = new Recipe("Ravioli", 4);
-        testList[2] = new Recipe("Chocolate cake", 8);
-        testList[3] = new Recipe("Empanadas", 16);
-        testList[4] = new Recipe("Apple pie", 6);
-        testList[5] = new Recipe("Fried green tomatoes", 5);
-        testList[6] = new Recipe("Ravioli", 4);
-        testList[7] = new Recipe("Chocolate cake", 8);
-        testList[8] = new Recipe("Empanadas", 16);
-        testList[9] = new Recipe("Apple pie", 6);
-
-        mAdapter = new RecipeAdapter(getActivity(), testList);
+        mAdapter = new RecipeAdapter(getActivity(), new Recipe[0]);
         mAdapter.setClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -116,17 +108,34 @@ public class MainActivityFragment extends Fragment
         mErrorMessageTextView.setVisibility(View.VISIBLE);
     }
 
+    // Load the data from the JSON file URL
     @Override
     public Loader<Recipe[]> onCreateLoader(int id, Bundle args) {
-        mLoadingIndicator.setVisibility(View.GONE);
+        RecipeLoader recipeLoader;
+        if (id == RECIPE_LOADER_ID){
+            mErrorMessage = getString(R.string.no_results);
+            recipeLoader = new RecipeLoader(getActivity());
+            return recipeLoader;
+        }
         return null;
-        // TODO: Get the data from the JSON file url
     }
 
+    // When the Loader finishes loading, add the list of Recipes to the Adapter data set
     @Override
-    public void onLoadFinished(Loader<Recipe[]> loader, Recipe[] data) {
+    public void onLoadFinished(Loader<Recipe[]> loader, Recipe[] newRecipes) {
         mLoadingIndicator.setVisibility(View.GONE);
-        //TODO: Update the adapter with the data
+        mErrorMessageTextView.setText(mErrorMessage);
+        mAdapter.setAllRecipies(new Recipe[0]);
+
+        if (newRecipes != null && newRecipes.length > 0){
+            mAdapter.setAllRecipies(newRecipes);
+        } else {
+            showErrorMessage();
+        }
+
+        if (mPosition == RecyclerView.NO_POSITION) {
+            mPosition = 0;}
+        mRecyclerView.smoothScrollToPosition(mPosition);
     }
 
     // Reset the loader to clear existing data

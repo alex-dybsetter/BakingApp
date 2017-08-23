@@ -2,6 +2,7 @@ package net.alexblass.bakingapp.models;
 
 /**
  *  A class to hold the info related to a particular Recipe.
+ *  TODO: Update Recipe to hold more complete recipe data
  */
 
 public class Recipe {
