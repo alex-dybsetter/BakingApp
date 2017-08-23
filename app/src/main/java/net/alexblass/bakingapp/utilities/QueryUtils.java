@@ -3,7 +3,9 @@ package net.alexblass.bakingapp.utilities;
 import android.text.TextUtils;
 import android.util.Log;
 
+import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
+import net.alexblass.bakingapp.models.RecipeStep;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -133,12 +135,44 @@ public class QueryUtils {
             for (int i = 0; i < baseJsonResponse.length(); i++){
                 JSONObject currentRecipe = baseJsonResponse.getJSONObject(i);
 
+                int recipeId = currentRecipe.getInt("id");
                 String recipeName = currentRecipe.getString("name");
                 int recipeServings = currentRecipe.getInt("servings");
+                String recipeimage = currentRecipe.getString("image");
 
-                // TODO: Fetch other data from JSON
+                JSONArray recipeIngredientsJson = currentRecipe.getJSONArray("ingredients");
+                Ingredient[] recipeIngredients = new Ingredient[recipeIngredientsJson.length()];
+                for (int j = 0; j < recipeIngredientsJson.length(); j++){
 
-                Recipe newRecipe = new Recipe(recipeName, recipeServings);
+                    JSONObject currentIngredient = recipeIngredientsJson.getJSONObject(i);
+
+                    recipeIngredients[i] = new Ingredient(
+                            currentIngredient.getLong("quantity"),
+                            currentIngredient.getString("measure"),
+                            currentIngredient.getString("ingredient"));
+                }
+
+                JSONArray recipeStepsJson = currentRecipe.getJSONArray("steps");
+                RecipeStep[] recipeSteps = new RecipeStep[recipeStepsJson.length()];
+                for (int k = 0; k < recipeStepsJson.length(); k++){
+
+                    JSONObject currentStep = recipeStepsJson.getJSONObject(i);
+
+                    recipeSteps[i] = new RecipeStep(
+                            currentStep.getInt("id"),
+                            currentStep.getString("shortDescription"),
+                            currentStep.getString("description"),
+                            currentStep.getString("videoURL"),
+                            currentStep.getString("thumbnailURL"));
+                }
+
+                Recipe newRecipe = new Recipe(
+                        recipeId,
+                        recipeName,
+                        recipeIngredients,
+                        recipeSteps,
+                        recipeServings,
+                        recipeimage);
                 recipes[i] = newRecipe;
             }
         } catch (JSONException e){
