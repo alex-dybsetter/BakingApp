@@ -1,11 +1,15 @@
 package net.alexblass.bakingapp.utilities;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import net.alexblass.bakingapp.R;
 import net.alexblass.bakingapp.models.Recipe;
@@ -75,6 +79,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             holder.name.setText(selectedRecipe.getName());
             holder.servings.setText(mContext.getString(
                     R.string.servings, selectedRecipe.getServings()));
+
+            if (!selectedRecipe.getImageUrl().equals("")){
+                holder.image.setVisibility(View.VISIBLE);
+                Picasso.with(mContext)
+                        .load(selectedRecipe.getImageUrl())
+                        .into(holder.image);
+            }
         }
     }
 
@@ -86,6 +97,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     // Stores and recycles views to improve app performance and smoother scrolling
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+        private ImageView image;
         private TextView name;
         private TextView servings;
 
@@ -93,6 +105,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             super(itemView);
             itemView.setOnClickListener(this);
 
+            image = (ImageView) itemView.findViewById(R.id.recipe_image);
             name = (TextView) itemView.findViewById(R.id.recipe_name_tv);
             servings = (TextView) itemView.findViewById(R.id.recipe_servings_tv);
         }
