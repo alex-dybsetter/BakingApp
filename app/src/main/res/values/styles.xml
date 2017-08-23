@@ -14,4 +14,9 @@
         <item name="android:layout_marginBottom">@dimen/small_padding</item>
     </style>
 
+    <style name="buttons">
+        <item name="android:tint">@color/colorAccent</item>
+        <item name="android:padding">@dimen/small_padding</item>
+    </style>
+
 </resources>
