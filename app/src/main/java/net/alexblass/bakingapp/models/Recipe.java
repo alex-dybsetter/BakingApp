@@ -32,10 +32,8 @@ public class Recipe implements Parcelable{
         mName = in.readString();
         mServings = in.readInt();
         mImageUrl = in.readString();
-        mIngredients = (Ingredient[]) in.readParcelableArray(
-                net.alexblass.bakingapp.models.Ingredient.class.getClassLoader());
-        mSteps = (RecipeStep[]) in.readParcelableArray(
-                net.alexblass.bakingapp.models.RecipeStep.class.getClassLoader());
+        mIngredients = in.createTypedArray(Ingredient.CREATOR);
+        mSteps = in.createTypedArray(RecipeStep.CREATOR);
     }
 
     public int getId() {
@@ -75,8 +73,8 @@ public class Recipe implements Parcelable{
         dest.writeString(mName);
         dest.writeInt(mServings);
         dest.writeString(mImageUrl);
-        dest.writeParcelableArray(mIngredients, 0);
-        dest.writeParcelableArray(mSteps, 0);
+        dest.writeTypedArray(mIngredients, 0);
+        dest.writeTypedArray(mSteps, 0);
     }
 
     // Creator for Parcelable implementation
