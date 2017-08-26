@@ -14,6 +14,10 @@
         <item name="android:layout_marginBottom">@dimen/small_padding</item>
     </style>
 
+    <style name="servingsSubtitle">
+        <item name="android:textSize">@dimen/base_text</item>
+    </style>
+
     <style name="buttons">
         <item name="android:tint">@color/colorAccent</item>
         <item name="android:paddingLeft">@dimen/small_padding</item>

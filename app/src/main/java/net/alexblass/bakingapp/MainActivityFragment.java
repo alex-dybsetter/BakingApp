@@ -3,6 +3,7 @@ package net.alexblass.bakingapp;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,6 +27,9 @@ import net.alexblass.bakingapp.utilities.RecipeLoader;
 public class MainActivityFragment extends Fragment
         implements RecipeAdapter.ItemClickListener,
         LoaderManager.LoaderCallbacks<Recipe[]>{
+    // The key to pass and get Recipes from Intents
+    public static final String RECIPE_KEY = "recipe";
+
     // The ID for the recipe loader
     private static final int RECIPE_LOADER_ID = 0;
 
@@ -147,6 +151,11 @@ public class MainActivityFragment extends Fragment
     // Respond to click events by launching the detail activity
     @Override
     public void onItemClick(View view, int position) {
-        // TODO: Launch detail activity
+        Intent detailIntent = new Intent(getActivity(), RecipeDetailActivity.class);
+
+        Recipe selectedRecipe = mAdapter.getItem(position);
+        detailIntent.putExtra(RECIPE_KEY, selectedRecipe);
+
+        startActivity(detailIntent);
     }
 }

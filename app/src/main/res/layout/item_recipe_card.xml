@@ -6,12 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/small_padding"
-    app:cardCornerRadius="@dimen/card_corner">
+    android:paddingBottom="@dimen/card_padding_vertical"
+    app:contentPaddingBottom="@dimen/card_padding_vertical"
+    app:cardCornerRadius="@dimen/card_corner"
+    android:elevation="@dimen/card_elevation">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/card_padding">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/recipe_image"
@@ -26,20 +28,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/card_padding"
-            android:layout_marginTop="@dimen/card_padding"
             android:src="@drawable/ic_share_white_24dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/recipe_image"/>
+            android:layout_alignParentBottom="true"/>
 
         <ImageView
             android:id="@+id/favorite_btn"
             style="@style/buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/card_padding"
             android:src="@drawable/ic_favorite_border_white_24dp"
             android:layout_toLeftOf="@id/share_btn"
-            android:layout_below="@id/recipe_image"/>
+            android:layout_alignParentBottom="true"/>
 
         <TextView
             android:id="@+id/recipe_name_tv"
@@ -48,20 +48,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/card_padding"
-            android:layout_marginTop="@dimen/card_padding"
+            android:layout_marginTop="@dimen/card_padding_vertical"
             android:layout_toLeftOf="@id/favorite_btn"
-            android:layout_below="@id/recipe_image"
-            android:layout_centerVertical="true"/>
+            android:layout_below="@id/recipe_image"/>
 
         <TextView
             android:id="@+id/recipe_servings_tv"
+            style="@style/servingsSubtitle"
             tools:text="10 servings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/card_padding"
-            android:layout_marginTop="@dimen/small_padding"
-            android:layout_below="@+id/favorite_btn"
-            android:layout_alignParentRight="true"/>
+            android:layout_marginLeft="@dimen/card_padding"
+            android:layout_below="@+id/recipe_name_tv"
+            android:layout_alignParentLeft="true"/>
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>
