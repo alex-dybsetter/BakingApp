@@ -12,6 +12,7 @@
 
     <dimen name="base_text">14sp</dimen>
     <dimen name="recipe_title">24sp</dimen>
+    <dimen name="detail_title">18sp</dimen>
 
     <dimen name="zero">0dp</dimen>
 </resources>

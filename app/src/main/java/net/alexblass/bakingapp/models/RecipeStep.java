@@ -10,14 +10,14 @@ import android.os.Parcelable;
 
 public class RecipeStep implements Parcelable {
     private int mId;
-    private String mTitle;
+    private String mShortDescription;
     private String mDescription;
     private String mVideoUrl;
     private String mImageUrl;
 
-    public RecipeStep(int id, String title, String description, String videoUrl, String imageUrl){
+    public RecipeStep(int id, String shortDescription, String description, String videoUrl, String imageUrl){
         this.mId = id;
-        this.mTitle = title;
+        this.mShortDescription = shortDescription;
         this.mDescription = description;
         this.mVideoUrl = videoUrl;
         this.mImageUrl = imageUrl;
@@ -26,7 +26,7 @@ public class RecipeStep implements Parcelable {
     // Create a RecipeStep from a Parcel
     protected RecipeStep(Parcel in) {
         mId = in.readInt();
-        mTitle = in.readString();
+        mShortDescription = in.readString();
         mDescription = in.readString();
         mVideoUrl = in.readString();
         mImageUrl = in.readString();
@@ -36,8 +36,8 @@ public class RecipeStep implements Parcelable {
         return mId;
     }
 
-    public String getTitle() {
-        return mTitle;
+    public String getShortDescription() {
+        return mShortDescription;
     }
 
     public String getDescription() {
@@ -62,7 +62,7 @@ public class RecipeStep implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mId);
-        dest.writeString(mTitle);
+        dest.writeString(mShortDescription);
         dest.writeString(mDescription);
         dest.writeString(mVideoUrl);
         dest.writeString(mImageUrl);

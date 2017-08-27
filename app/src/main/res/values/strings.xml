@@ -10,4 +10,7 @@
     <string name="servings">
         <xliff:g id="mins">%1$x</xliff:g> servings
     </string>
+
+    <string name="ingredients_title">Ingredients</string>
+    <string name="steps_title">Directions</string>
 </resources>

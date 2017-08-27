@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.utilities.IngredientAdapter;
+import net.alexblass.bakingapp.utilities.RecipeStepAdapter;
 
 import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
 
@@ -32,11 +33,11 @@ public class RecipeDetailFragment extends Fragment {
     // A RecyclerView to display all the RecipeSteps
     private RecyclerView mStepsRecyclerView;
 
-    // The LinearLayoutManager to display Ingredients and RecipeSteps in a list
-    private LinearLayoutManager mLayoutManager;
-
     // An IngredientAdapter to display the Ingredients correctly
     private IngredientAdapter mIngredientAdapter;
+
+    // A RecipeStepAdapter to display the RecipeSteps correctly
+    private RecipeStepAdapter mStepAdapter;
 
     // Empty constructor
     public RecipeDetailFragment() {
@@ -59,17 +60,21 @@ public class RecipeDetailFragment extends Fragment {
                 mIngredientsRecyclerView = (RecyclerView) rootView.findViewById(R.id.ingredient_rv);
                 mStepsRecyclerView = (RecyclerView) rootView.findViewById(R.id.recipe_step_rv);
 
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-                mIngredientsRecyclerView.setLayoutManager(mLayoutManager);
+                mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(
+                        getActivity()));
                 mIngredientsRecyclerView.setHasFixedSize(true);
-//                mStepsRecyclerView.setLayoutManager(mLayoutManager);
-//                mStepsRecyclerView.setHasFixedSize(true);
+
+                mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(
+                        getActivity()));
+                mStepsRecyclerView.setHasFixedSize(true);
 
                 mIngredientAdapter =
                         new IngredientAdapter(getActivity(), mSelectedRecipe.getIngredients());
                 mIngredientsRecyclerView.setAdapter(mIngredientAdapter);
+
+                mStepAdapter =
+                        new RecipeStepAdapter(getActivity(), mSelectedRecipe.getSteps());
+                mStepsRecyclerView.setAdapter(mStepAdapter);
             }
         }
 
