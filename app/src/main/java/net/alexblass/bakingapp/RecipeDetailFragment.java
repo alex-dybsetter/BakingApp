@@ -4,17 +4,17 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 
-import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
-import net.alexblass.bakingapp.utilities.IngredientAdapter;
-import net.alexblass.bakingapp.utilities.RecipeStepAdapter;
+import net.alexblass.bakingapp.utilities.ExpandableListAdapter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
 
@@ -22,22 +22,23 @@ import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
  * This Fragment allows users to view the detailed information about a Recipe.
  */
 
-public class RecipeDetailFragment extends Fragment {
+public class RecipeDetailFragment<T> extends Fragment {
 
     // The Recipe that we're viewing
     private Recipe mSelectedRecipe;
 
-    // A RecyclerView to display all the Ingredients
-    private RecyclerView mIngredientsRecyclerView;
+    // An expandable list adapter to display the detail data of a recipe,
+    // such as the list of ingredients and the list of steps.
+    private ExpandableListAdapter mAdapter;
 
-    // A RecyclerView to display all the RecipeSteps
-    private RecyclerView mStepsRecyclerView;
+    // The ExpandableListView to display all the Ingredients and RecipeSteps
+    private ExpandableListView mExpListView;
 
-    // An IngredientAdapter to display the Ingredients correctly
-    private IngredientAdapter mIngredientAdapter;
+    // A list to hold the titles of each section
+    private List<String> mSectionTitleList;
 
-    // A RecipeStepAdapter to display the RecipeSteps correctly
-    private RecipeStepAdapter mStepAdapter;
+    // A list to hold the section children data
+    private HashMap<String, List<T>> mSectionChildList;
 
     // Empty constructor
     public RecipeDetailFragment() {
@@ -57,27 +58,22 @@ public class RecipeDetailFragment extends Fragment {
                 // Set the action bar title to the Recipe name
                 ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(mSelectedRecipe.getName());
 
-                mIngredientsRecyclerView = (RecyclerView) rootView.findViewById(R.id.ingredient_rv);
-                mStepsRecyclerView = (RecyclerView) rootView.findViewById(R.id.recipe_step_rv);
+                mExpListView = (ExpandableListView) rootView.findViewById(R.id.expandableList);
 
-                mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(
-                        getActivity()));
-                mIngredientsRecyclerView.setHasFixedSize(true);
+                mSectionTitleList = new ArrayList<>();
+                mSectionChildList = new HashMap<>();
 
-                mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(
-                        getActivity()));
-                mStepsRecyclerView.setHasFixedSize(true);
+                mSectionTitleList.add(getActivity().getString(R.string.ingredients_title));
+                mSectionTitleList.add(getActivity().getString(R.string.steps_title));
 
-                mIngredientAdapter =
-                        new IngredientAdapter(getActivity(), mSelectedRecipe.getIngredients());
-                mIngredientsRecyclerView.setAdapter(mIngredientAdapter);
+                mSectionChildList.put(mSectionTitleList.get(0), (List<T>) mSelectedRecipe.getIngredients());
+                mSectionChildList.put(mSectionTitleList.get(1), (List<T>) mSelectedRecipe.getSteps());
 
-                mStepAdapter =
-                        new RecipeStepAdapter(getActivity(), mSelectedRecipe.getSteps());
-                mStepsRecyclerView.setAdapter(mStepAdapter);
+                mAdapter = new ExpandableListAdapter(getActivity(), mSectionTitleList, mSectionChildList);
+
+                mExpListView.setAdapter(mAdapter);
             }
         }
-
         return rootView;
     }
 }

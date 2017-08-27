@@ -3,6 +3,8 @@ package net.alexblass.bakingapp.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  *  A class to hold the info related to a particular Recipe.
  *  Implements Parcelable to be passed between Intents.
@@ -13,11 +15,11 @@ public class Recipe implements Parcelable{
     private String mName;
     private int mServings;
     private String mImageUrl;
-    private Ingredient[] mIngredients;
-    private RecipeStep[] mSteps;
+    private List<Ingredient> mIngredients;
+    private List<RecipeStep> mSteps;
 
-    public Recipe(int id, String name, Ingredient[] ingredients,
-                  RecipeStep[] steps, int servings, String imageUrl){
+    public Recipe(int id, String name, List<Ingredient> ingredients,
+                  List<RecipeStep> steps, int servings, String imageUrl){
         this.mId = id;
         this.mName = name;
         this.mIngredients = ingredients;
@@ -32,8 +34,8 @@ public class Recipe implements Parcelable{
         mName = in.readString();
         mServings = in.readInt();
         mImageUrl = in.readString();
-        mIngredients = in.createTypedArray(Ingredient.CREATOR);
-        mSteps = in.createTypedArray(RecipeStep.CREATOR);
+        mIngredients = in.createTypedArrayList(Ingredient.CREATOR);
+        mSteps = in.createTypedArrayList(RecipeStep.CREATOR);
     }
 
     public int getId() {
@@ -44,11 +46,11 @@ public class Recipe implements Parcelable{
         return mName;
     }
 
-    public Ingredient[] getIngredients() {
+    public List<Ingredient> getIngredients() {
         return mIngredients;
     }
 
-    public RecipeStep[] getSteps() {
+    public List<RecipeStep> getSteps() {
         return mSteps;
     }
 
@@ -73,8 +75,8 @@ public class Recipe implements Parcelable{
         dest.writeString(mName);
         dest.writeInt(mServings);
         dest.writeString(mImageUrl);
-        dest.writeTypedArray(mIngredients, 0);
-        dest.writeTypedArray(mSteps, 0);
+        dest.writeTypedList(mIngredients);
+        dest.writeTypedList(mSteps);
     }
 
     // Creator for Parcelable implementation

@@ -19,6 +19,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper methods to request and receive Recipe data.
@@ -141,29 +143,29 @@ public class QueryUtils {
                 String recipeimage = currentRecipe.getString("image");
 
                 JSONArray recipeIngredientsJson = currentRecipe.getJSONArray("ingredients");
-                Ingredient[] recipeIngredients = new Ingredient[recipeIngredientsJson.length()];
-                for (int j = 0; j < recipeIngredients.length; j++){
+                List<Ingredient> recipeIngredients = new ArrayList<>();
+                for (int j = 0; j < recipeIngredientsJson.length(); j++){
 
                     JSONObject currentIngredient = recipeIngredientsJson.getJSONObject(j);
 
-                    recipeIngredients[j] = new Ingredient(
+                    recipeIngredients.add(new Ingredient(
                             currentIngredient.getLong("quantity"),
                             currentIngredient.getString("measure"),
-                            currentIngredient.getString("ingredient"));
+                            currentIngredient.getString("ingredient")));
                 }
 
                 JSONArray recipeStepsJson = currentRecipe.getJSONArray("steps");
-                RecipeStep[] recipeSteps = new RecipeStep[recipeStepsJson.length()];
+                List<RecipeStep> recipeSteps = new ArrayList<>();
                 for (int k = 0; k < recipeStepsJson.length(); k++){
 
                     JSONObject currentStep = recipeStepsJson.getJSONObject(k);
 
-                    recipeSteps[k] = new RecipeStep(
+                    recipeSteps.add(new RecipeStep(
                             currentStep.getInt("id"),
                             currentStep.getString("shortDescription"),
                             currentStep.getString("description"),
                             currentStep.getString("videoURL"),
-                            currentStep.getString("thumbnailURL"));
+                            currentStep.getString("thumbnailURL")));
                 }
 
                 Recipe newRecipe = new Recipe(

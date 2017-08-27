@@ -7,6 +7,9 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_padding"
+        android:layout_marginTop="@dimen/small_padding"
+        android:layout_marginBottom="@dimen/small_padding"
         android:src="@drawable/ic_keyboard_arrow_right_white_24dp"
         android:tint="@color/colorAccent"/>
 
@@ -16,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/horizontal_margin"
         android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/small_padding"
         android:layout_marginBottom="@dimen/small_padding"/>
 
 </LinearLayout>
