@@ -142,11 +142,11 @@ public class QueryUtils {
 
                 JSONArray recipeIngredientsJson = currentRecipe.getJSONArray("ingredients");
                 Ingredient[] recipeIngredients = new Ingredient[recipeIngredientsJson.length()];
-                for (int j = 0; j < recipeIngredientsJson.length(); j++){
+                for (int j = 0; j < recipeIngredients.length; j++){
 
-                    JSONObject currentIngredient = recipeIngredientsJson.getJSONObject(i);
+                    JSONObject currentIngredient = recipeIngredientsJson.getJSONObject(j);
 
-                    recipeIngredients[i] = new Ingredient(
+                    recipeIngredients[j] = new Ingredient(
                             currentIngredient.getLong("quantity"),
                             currentIngredient.getString("measure"),
                             currentIngredient.getString("ingredient"));
@@ -156,9 +156,9 @@ public class QueryUtils {
                 RecipeStep[] recipeSteps = new RecipeStep[recipeStepsJson.length()];
                 for (int k = 0; k < recipeStepsJson.length(); k++){
 
-                    JSONObject currentStep = recipeStepsJson.getJSONObject(i);
+                    JSONObject currentStep = recipeStepsJson.getJSONObject(k);
 
-                    recipeSteps[i] = new RecipeStep(
+                    recipeSteps[k] = new RecipeStep(
                             currentStep.getInt("id"),
                             currentStep.getString("shortDescription"),
                             currentStep.getString("description"),

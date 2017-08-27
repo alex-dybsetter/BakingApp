@@ -52,7 +52,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     // Get a selected Recipe
     public Recipe getItem(int index){
         return mAllRecipies[index];
-    }// Get the number of movies in the array
+    }
 
     // Get the number of Recipes in the array
     @Override
