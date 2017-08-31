@@ -72,6 +72,7 @@ public class RecipeDetailFragment<T> extends Fragment {
                 mAdapter = new ExpandableListAdapter(getActivity(), mSectionTitleList, mSectionChildList);
 
                 mExpListView.setAdapter(mAdapter);
+                mExpListView.expandGroup(0);
             }
         }
         return rootView;

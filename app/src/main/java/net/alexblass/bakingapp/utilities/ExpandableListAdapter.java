@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.alexblass.bakingapp.R;
@@ -56,36 +57,33 @@ public class ExpandableListAdapter<T> extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) this.mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_detail_group, null);
+        }
+
+        ImageView icon = (ImageView) convertView.findViewById(R.id.step_description_imageview);
+        TextView mainContent = // Either the ingredient name or the description of the recipe step
+                (TextView) convertView.findViewById(R.id.detail_main_content_tv);
+        TextView quantity = (TextView) convertView.findViewById(R.id.ingredient_quantity_tv);
+        TextView measurement = (TextView) convertView.findViewById(R.id.ingredient_measurement_tv);
+
         // If the child is a RecipeStep, display the RecipeStep data accordingly
         if (getChild(groupPosition, childPosition) instanceof RecipeStep){
-            final RecipeStep childView = (RecipeStep) getChild(groupPosition, childPosition);
+            RecipeStep childView = (RecipeStep) getChild(groupPosition, childPosition);
 
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) this.mContext
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.item_recipe_step, null);
-            }
-
-            TextView descriptionTv = (TextView) convertView
-                    .findViewById(R.id.short_description_tv);
-
-            descriptionTv.setText(childView.getShortDescription());
+            icon.setVisibility(View.VISIBLE);
+            mainContent.setText(childView.getShortDescription());
+            quantity.setText("");
+            measurement.setText("");
 
             // If the child is an Ingredient, display the Ingredient data accordingly
         } else if (getChild(groupPosition, childPosition) instanceof Ingredient){
-            final Ingredient childView = (Ingredient) getChild(groupPosition, childPosition);
+            Ingredient childView = (Ingredient) getChild(groupPosition, childPosition);
 
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) this.mContext
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.item_ingredient, null);
-            }
-
-            TextView name = (TextView) convertView.findViewById(R.id.ingredient_name_tv);
-            TextView quantity = (TextView) convertView.findViewById(R.id.ingredient_quantity_tv);
-            TextView measurement = (TextView) convertView.findViewById(R.id.ingredient_measurement_tv);
-
-            name.setText(childView.getIngredientName());
+            icon.setVisibility(View.GONE);
+            mainContent.setText(childView.getIngredientName());
             quantity.setText(String.valueOf(childView.getQuantity()));
             measurement.setText(childView.getMeasurement());
         }
