@@ -24,7 +24,7 @@
 
         <ImageView
             android:id="@+id/share_btn"
-            style="@style/buttons"
+            style="@style/card_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/card_padding"
@@ -34,7 +34,7 @@
 
         <ImageView
             android:id="@+id/favorite_btn"
-            style="@style/buttons"
+            style="@style/card_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_favorite_border_white_24dp"

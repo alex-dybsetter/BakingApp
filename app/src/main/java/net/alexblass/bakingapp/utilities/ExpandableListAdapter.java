@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.alexblass.bakingapp.R;
 import net.alexblass.bakingapp.models.Ingredient;
@@ -87,8 +88,6 @@ public class ExpandableListAdapter<T> extends BaseExpandableListAdapter {
             quantity.setText(String.valueOf(childView.getQuantity()));
             measurement.setText(childView.getMeasurement());
         }
-
-
         return convertView;
     }
 

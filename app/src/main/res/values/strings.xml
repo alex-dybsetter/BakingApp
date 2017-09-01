@@ -13,4 +13,9 @@
 
     <string name="ingredients_title">Ingredients</string>
     <string name="steps_title">Directions</string>
+
+    <string name="recipe_step_title">Recipe Step</string>
+
+    <string name="prev_btn">Previous</string>
+    <string name="next_btn">Next</string>
 </resources>

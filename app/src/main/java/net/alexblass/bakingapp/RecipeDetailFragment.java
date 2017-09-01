@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import net.alexblass.bakingapp.models.Recipe;
+import net.alexblass.bakingapp.models.RecipeStep;
 import net.alexblass.bakingapp.utilities.ExpandableListAdapter;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
  */
 
 public class RecipeDetailFragment<T> extends Fragment {
+    // The key to pass and get RecipeSteps from Intents
+    public static final String RECIPE_STEP_KEY = "recipe_step";
 
     // The Recipe that we're viewing
     private Recipe mSelectedRecipe;
@@ -72,7 +75,31 @@ public class RecipeDetailFragment<T> extends Fragment {
                 mAdapter = new ExpandableListAdapter(getActivity(), mSectionTitleList, mSectionChildList);
 
                 mExpListView.setAdapter(mAdapter);
-                mExpListView.expandGroup(0);
+
+                for (int i = 0; i < mAdapter.getGroupCount(); i++) {
+                    mExpListView.expandGroup(i);
+                }
+
+                mExpListView
+                        .setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                            @Override
+                            public boolean onChildClick(
+                                    ExpandableListView parent, View v,
+                                    int groupPosition, int childPosition,
+                                    long id) {
+
+                                Intent detailIntent = new Intent(getActivity(), RecipeStepActivity.class);
+
+                                RecipeStep selectedStep = (RecipeStep)
+                                        mAdapter.getChild(groupPosition, childPosition);
+                                detailIntent.putExtra(RECIPE_STEP_KEY, selectedStep);
+
+                                startActivity(detailIntent);
+
+                                return false;
+                            }
+                        });
             }
         }
         return rootView;
