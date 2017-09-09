@@ -30,6 +30,9 @@ public class RecipeDetailFragment<T> extends Fragment {
     // The Recipe that we're viewing
     private Recipe mSelectedRecipe;
 
+    // The selected RecipeStep
+    RecipeStep mSelectedStep;
+
     // An expandable list adapter to display the detail data of a recipe,
     // such as the list of ingredients and the list of steps.
     private ExpandableListAdapter mAdapter;
@@ -89,14 +92,22 @@ public class RecipeDetailFragment<T> extends Fragment {
                                     int groupPosition, int childPosition,
                                     long id) {
 
-                                Intent detailIntent = new Intent(getActivity(), RecipeStepActivity.class);
-
-                                RecipeStep selectedStep = (RecipeStep)
+                                mSelectedStep = (RecipeStep)
                                         mAdapter.getChild(groupPosition, childPosition);
-                                detailIntent.putExtra(RECIPE_STEP_KEY, selectedStep);
-                                detailIntent.putExtra(RECIPE_KEY, mSelectedRecipe);
 
-                                startActivity(detailIntent);
+                                RecipeStepFragment stepDetailFragment = new RecipeStepFragment();
+
+                                Bundle args = new Bundle();
+                                args.putParcelable(RECIPE_STEP_KEY, mSelectedStep);
+                                args.putParcelable(RECIPE_KEY, mSelectedRecipe);
+
+                                stepDetailFragment.setArguments(args);
+
+                                ((AppCompatActivity) getActivity()).getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.fragment_container, stepDetailFragment,"stepDetailFragment")
+                                        .addToBackStack(null)
+                                        .commit();
 
                                 return false;
                             }

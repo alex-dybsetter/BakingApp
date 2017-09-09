@@ -1,11 +1,9 @@
 package net.alexblass.bakingapp;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -169,12 +167,17 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
 
-        Intent intentThatStartedThisActivity = getActivity().getIntent();
+        // Clear any old views to avoid overlaying Fragment layouts
+        if (container != null) {
+            container.removeAllViews();
+        }
 
-        if (intentThatStartedThisActivity != null) {
+        Bundle bundle = this.getArguments();
+
+        if (bundle != null) {
             // If there's a valid RecipeStep, get the data from the RecipeStep and display it
-            if (intentThatStartedThisActivity.hasExtra(RECIPE_STEP_KEY)) {
-                mSelectedStep = intentThatStartedThisActivity.getParcelableExtra(RECIPE_STEP_KEY);
+            if (bundle.getParcelable(RECIPE_STEP_KEY) != null) {
+                mSelectedStep = bundle.getParcelable(RECIPE_STEP_KEY);
 
                 mThumbnailImageView = (ImageView) rootView.findViewById(R.id.step_thumbnail_imageview);
 
@@ -237,8 +240,8 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
                 if (stepId == 0){
                     mPrevBtn.setVisibility(View.GONE);
                 }
-                if (intentThatStartedThisActivity.hasExtra(RECIPE_KEY)) {
-                    mSelectedRecipe = intentThatStartedThisActivity.getParcelableExtra(RECIPE_KEY);
+                if (bundle.getParcelable(RECIPE_KEY) != null) {
+                    mSelectedRecipe = bundle.getParcelable(RECIPE_KEY);
 
                     if (stepId == mSelectedRecipe.getSteps().size() - 1){
                         mNextBtn.setVisibility(View.GONE);

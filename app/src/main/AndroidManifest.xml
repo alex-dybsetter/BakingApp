@@ -28,13 +28,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.alexblass.bakingapp.MainActivity"/>
         </activity>
-        <activity android:name=".RecipeStepActivity"
-            android:parentActivityName=".RecipeDetailActivity"
-            android:label="@string/recipe_step_title">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.alexblass.bakingapp.RecipeDetailActivity"/>
-        </activity>
     </application>
 
 </manifest>
