@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,8 +40,10 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
+import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.models.RecipeStep;
 
+import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
 import static net.alexblass.bakingapp.RecipeDetailFragment.RECIPE_STEP_KEY;
 
 
@@ -144,12 +148,16 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
     // The selected RecipeStep
     private RecipeStep mSelectedStep;
 
+    // The Recipe
+    private Recipe mSelectedRecipe;
+
     // The views in the StepDetail layout
     private TextView mTitleTv, mDescriptionTv;
     private ImageView mThumbnailImageView;
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private ProgressBar mLoadingIndicator;
+    private Button mPrevBtn, mNextBtn;
 
 
 
@@ -174,6 +182,9 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
                 mDescriptionTv = (TextView) rootView.findViewById(R.id.step_description_tv);
                 mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.step_video_exoplayer);
                 mLoadingIndicator = (ProgressBar) rootView.findViewById(R.id.loading_indicator_step_detail);
+
+                mPrevBtn = (Button) rootView.findViewById(R.id.prev_step_btn);
+                mNextBtn = (Button) rootView.findViewById(R.id.next_step_btn);
 
                 BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                 TrackSelection.Factory videoTrackSelectionFactory =
@@ -220,6 +231,35 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
                 if (mSelectedStep.getImageUrl().equals("") && mSelectedStep.getVideoUrl().equals("")){
                     mLoadingIndicator.setVisibility(View.GONE);
                 }
+
+                // If the RecipeStep is the first or last, hide the Previous or Next button
+                int stepId = mSelectedStep.getId();
+                if (stepId == 0){
+                    mPrevBtn.setVisibility(View.GONE);
+                }
+                if (intentThatStartedThisActivity.hasExtra(RECIPE_KEY)) {
+                    mSelectedRecipe = intentThatStartedThisActivity.getParcelableExtra(RECIPE_KEY);
+
+                    if (stepId == mSelectedRecipe.getSteps().size() - 1){
+                        mNextBtn.setVisibility(View.GONE);
+                    }
+                }
+
+                // Open a fragment with the previous step
+                mPrevBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO
+                    }
+                });
+
+                // Open a fragment with the next step
+                mNextBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO
+                    }
+                });
             }
         }
         return rootView;

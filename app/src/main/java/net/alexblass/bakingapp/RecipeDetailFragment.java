@@ -94,6 +94,7 @@ public class RecipeDetailFragment<T> extends Fragment {
                                 RecipeStep selectedStep = (RecipeStep)
                                         mAdapter.getChild(groupPosition, childPosition);
                                 detailIntent.putExtra(RECIPE_STEP_KEY, selectedStep);
+                                detailIntent.putExtra(RECIPE_KEY, mSelectedRecipe);
 
                                 startActivity(detailIntent);
 
