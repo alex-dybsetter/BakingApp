@@ -1,15 +1,41 @@
 package net.alexblass.bakingapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveVideoTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
 import net.alexblass.bakingapp.models.RecipeStep;
@@ -114,13 +140,18 @@ import static net.alexblass.bakingapp.RecipeDetailFragment.RECIPE_STEP_KEY;
 //        void onFragmentInteraction(Uri uri);
 //    }
 //}
-public class RecipeStepFragment extends Fragment {
-
+public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListener {
     // The selected RecipeStep
     private RecipeStep mSelectedStep;
 
-    TextView mTitleTv, mDescriptionTv;
-    ImageView mThumbnailImageView;
+    // The views in the StepDetail layout
+    private TextView mTitleTv, mDescriptionTv;
+    private ImageView mThumbnailImageView;
+    private SimpleExoPlayer mExoPlayer;
+    private SimpleExoPlayerView mPlayerView;
+    private ProgressBar mLoadingIndicator;
+
+
 
     // Empty constructor
     public RecipeStepFragment() {
@@ -141,19 +172,128 @@ public class RecipeStepFragment extends Fragment {
 
                 mTitleTv = (TextView) rootView.findViewById(R.id.step_description_title_tv);
                 mDescriptionTv = (TextView) rootView.findViewById(R.id.step_description_tv);
+                mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.step_video_exoplayer);
+                mLoadingIndicator = (ProgressBar) rootView.findViewById(R.id.loading_indicator_step_detail);
+
+                BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+                TrackSelection.Factory videoTrackSelectionFactory =
+                        new AdaptiveVideoTrackSelection.Factory(bandwidthMeter);
+                TrackSelector trackSelector =
+                        new DefaultTrackSelector(videoTrackSelectionFactory);
+                LoadControl loadControl = new DefaultLoadControl();
+
+                mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
+
+                mPlayerView.setPlayer(mExoPlayer);
+                mPlayerView.setKeepScreenOn(true);
+
+                DataSource.Factory dataSourceFactory =
+                        new DefaultDataSourceFactory(getActivity(), Util.getUserAgent(getActivity(), "ExoPlayer"));
+
+                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
                 mTitleTv.setText(mSelectedStep.getShortDescription());
                 mDescriptionTv.setText(mSelectedStep.getDescription());
 
                 // Check if there is an image to the step
                 if (!mSelectedStep.getImageUrl().equals("")){
+                    mLoadingIndicator.setVisibility(View.GONE);
                     mThumbnailImageView.setVisibility(View.VISIBLE);
                     Picasso.with(getActivity())
                             .load(mSelectedStep.getImageUrl())
                             .into(mThumbnailImageView);
                 }
+
+                // Check if there is a video to the step
+                if (!mSelectedStep.getVideoUrl().equals("")){
+                    Uri vidUri = Uri.parse(mSelectedStep.getVideoUrl());
+
+                    MediaSource videoSource = new ExtractorMediaSource(vidUri,
+                            dataSourceFactory, extractorsFactory, null, null);
+
+                    mExoPlayer.addListener(this);
+                    mExoPlayer.prepare(videoSource);
+                    mExoPlayer.setPlayWhenReady(true);
+                }
+
+                // If there's no video or image, hide the loading indicator
+                if (mSelectedStep.getImageUrl().equals("") && mSelectedStep.getVideoUrl().equals("")){
+                    mLoadingIndicator.setVisibility(View.GONE);
+                }
             }
         }
         return rootView;
+    }
+
+    // Pause the video when the player is not in focus
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mExoPlayer != null) {
+            mExoPlayer.setPlayWhenReady(false);
+        }
+    }
+
+    // Required override method
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
+
+    // Required override method
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    // The ExoPlayer video states
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        switch (playbackState) {
+            case ExoPlayer.STATE_BUFFERING:
+                break;
+            case ExoPlayer.STATE_IDLE:
+                break;
+            case ExoPlayer.STATE_READY:
+                // When the video is ready to play, make it visible
+                mLoadingIndicator.setVisibility(View.GONE);
+                mPlayerView.setVisibility(View.VISIBLE);
+                break;
+            case ExoPlayer.STATE_ENDED:
+                break;
+        }
+    }
+
+    // An error message if there's a problem streaming the video
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setTitle(R.string.video_error_title);
+        dialog.setMessage(R.string.video_error_body);
+        dialog.setPositiveButton(R.string.positive_btn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog ad = dialog.create();
+        ad.show();
+    }
+
+    // Required Override method
+    @Override
+    public void onPositionDiscontinuity() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mExoPlayer.release();
     }
 }
