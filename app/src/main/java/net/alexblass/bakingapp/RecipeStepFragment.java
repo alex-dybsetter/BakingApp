@@ -236,7 +236,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
                 }
 
                 // If the RecipeStep is the first or last, hide the Previous or Next button
-                int stepId = mSelectedStep.getId();
+                final int stepId = mSelectedStep.getId();
                 if (stepId == 0){
                     mPrevBtn.setVisibility(View.GONE);
                 }
@@ -252,7 +252,10 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
                 mPrevBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO
+                        if (stepId > 0) {
+                            mSelectedStep = mSelectedRecipe.getSteps().get(stepId - 1);
+                            launchNewFragment(mSelectedRecipe, mSelectedStep);
+                        }
                     }
                 });
 
@@ -260,12 +263,31 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
                 mNextBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO
+                        if (stepId < mSelectedRecipe.getSteps().size() - 1) {
+                            mSelectedStep = mSelectedRecipe.getSteps().get(stepId + 1);
+                            launchNewFragment(mSelectedRecipe, mSelectedStep);
+                        }
                     }
                 });
             }
         }
         return rootView;
+    }
+
+    // Create a new StepDetailFragment
+    private void launchNewFragment(Recipe recipe, RecipeStep step){
+        RecipeStepFragment stepDetailFragment = new RecipeStepFragment();
+
+        Bundle args = new Bundle();
+        args.putParcelable(RECIPE_STEP_KEY, step);
+        args.putParcelable(RECIPE_KEY, recipe);
+
+        stepDetailFragment.setArguments(args);
+
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, stepDetailFragment, "stepDetailFragment")
+                .commit();
     }
 
     // Pause the video when the player is not in focus
