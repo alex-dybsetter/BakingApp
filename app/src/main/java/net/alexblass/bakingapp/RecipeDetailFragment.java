@@ -1,8 +1,8 @@
 package net.alexblass.bakingapp;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,7 +103,7 @@ public class RecipeDetailFragment<T> extends Fragment {
 
                                 stepDetailFragment.setArguments(args);
 
-                                ((AppCompatActivity) getActivity()).getSupportFragmentManager()
+                                getActivity().getSupportFragmentManager()
                                         .beginTransaction()
                                         .replace(R.id.fragment_container, stepDetailFragment,"stepDetailFragment")
                                         .addToBackStack(null)
