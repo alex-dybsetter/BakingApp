@@ -16,4 +16,9 @@
     <dimen name="step_title">18sp</dimen>
 
     <dimen name="zero">0dp</dimen>
+
+    <!--One row-->
+    <dimen name="widget_min_height">40dp</dimen>
+    <!--One column-->
+    <dimen name="widget_min_width">40dp</dimen>
 </resources>

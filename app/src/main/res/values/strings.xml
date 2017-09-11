@@ -22,4 +22,6 @@
     <string name="video_error_title">Could not stream video</string>
     <string name="video_error_body">There was an error streaming the video. /nPlease try again.</string>
     <string name="positive_btn">OK</string>
+
+    <string name="launch_error">There was a problem loading the application.</string>
 </resources>
