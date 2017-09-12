@@ -161,7 +161,12 @@ public class QueryUtils {
                     JSONObject currentStep = recipeStepsJson.getJSONObject(k);
 
                     recipeSteps.add(new RecipeStep(
-                            currentStep.getInt("id"),
+
+                            // Error in the data with the Yellow Cake JSON:
+                            // Step #7 is skipped so the numbers are all shifted +1
+                            // So we're going to use our incrementer k instead
+                            // of currentStep.getInt("id") for consistency.
+                            k,
                             currentStep.getString("shortDescription"),
                             currentStep.getString("description"),
                             currentStep.getString("videoURL"),

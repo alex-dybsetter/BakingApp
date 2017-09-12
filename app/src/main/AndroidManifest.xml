@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--Receiver for the app widget-->
+        <!-- Receiver for the app widget -->
         <receiver android:name=".BakingWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -33,12 +33,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RecipeOverviewActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="">
+        <activity
+            android:name=".RecipeOverviewActivity"
+            android:label=""
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.alexblass.bakingapp.MainActivity"/>
+                android:value="net.alexblass.bakingapp.MainActivity" />
         </activity>
     </application>
 

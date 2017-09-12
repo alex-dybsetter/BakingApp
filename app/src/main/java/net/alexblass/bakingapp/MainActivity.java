@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-    // TODO: set two pane view for tablet
     // TODO: Verify localization requirements
     // TODO: Verify accessibility requirements
     // TODO: Add butterknife
