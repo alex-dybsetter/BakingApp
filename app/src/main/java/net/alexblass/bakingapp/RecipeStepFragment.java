@@ -1,17 +1,21 @@
 package net.alexblass.bakingapp;
 
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -220,6 +224,16 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
 
                 // Check if there is a video to the step
                 if (!mSelectedStep.getVideoUrl().equals("")){
+
+                    // If the device is in landscape, make the video full screen
+                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+                    } else {
+                        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+                    }
+
                     Uri vidUri = Uri.parse(mSelectedStep.getVideoUrl());
 
                     MediaSource videoSource = new ExtractorMediaSource(vidUri,
@@ -242,6 +256,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
                 }
                 if (bundle.getParcelable(RECIPE_KEY) != null) {
                     mSelectedRecipe = bundle.getParcelable(RECIPE_KEY);
+                    ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(mSelectedRecipe.getName());
 
                     if (stepId == mSelectedRecipe.getSteps().size() - 1){
                         mNextBtn.setVisibility(View.GONE);
