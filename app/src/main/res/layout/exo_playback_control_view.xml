@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layoutDirection="ltr"
+    android:background="@color/exoplayer_controls"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/exoplayer_margin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton android:id="@id/exo_play"
+            style="@style/ExoMediaButton.Play"/>
+
+        <ImageButton android:id="@id/exo_pause"
+            style="@style/ExoMediaButton.Pause"/>
+
+        <TextView android:id="@id/exo_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/exolayer_text_size"
+            android:textStyle="bold"
+            android:paddingLeft="@dimen/exoplayer_margin"
+            android:paddingRight="@dimen/exoplayer_margin"
+            android:includeFontPadding="false"
+            android:textColor="@color/exoplayer_text"/>
+
+        <SeekBar android:id="@id/exo_progress"
+            android:layout_width="@dimen/zero"
+            android:layout_weight="1"
+            android:layout_height="@dimen/seekbar_height"
+            android:focusable="false"
+            style="?android:attr/progressBarStyleHorizontal"/>
+
+        <TextView android:id="@id/exo_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/exolayer_text_size"
+            android:textStyle="bold"
+            android:paddingLeft="@dimen/exoplayer_margin"
+            android:paddingRight="@dimen/horizontal_margin"
+            android:includeFontPadding="false"
+            android:textColor="@color/exoplayer_text"/>
+
+    </LinearLayout>
+
+</LinearLayout>
