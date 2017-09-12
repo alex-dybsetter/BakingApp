@@ -9,12 +9,12 @@ import android.view.MenuItem;
  * The activity that displays the detailed information about a Recipe.
  */
 
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_detail);
+        setContentView(R.layout.activity_recipe_overview);
 
         if (findViewById(R.id.fragment_container) != null) {
             // If restoring from savedInstanceState, return to avoid overlapping fragments
@@ -23,14 +23,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
             }
 
             // Create a new Fragment to be placed in the activity layout
-            RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
+            RecipeOverviewFragment recipeOverviewFragment = new RecipeOverviewFragment();
 
             // Get the extras from the Intent
-            recipeDetailFragment.setArguments(getIntent().getExtras());
+            recipeOverviewFragment.setArguments(getIntent().getExtras());
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, recipeDetailFragment, "recipeDetailFragment")
+                    .add(R.id.fragment_container, recipeOverviewFragment, "recipeOverviewFragment")
                     .addToBackStack(null)
                     .commit();
         }

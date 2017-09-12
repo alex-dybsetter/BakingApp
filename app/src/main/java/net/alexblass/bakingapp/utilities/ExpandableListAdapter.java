@@ -1,7 +1,7 @@
 package net.alexblass.bakingapp.utilities;
 
 /**
- * An Adapter to display the Ingredients and the RecipeSteps in RecipeDetailActivity in an
+ * An Adapter to display the Ingredients and the RecipeSteps in RecipeOverviewActivity in an
  * expandable list.
  */
 

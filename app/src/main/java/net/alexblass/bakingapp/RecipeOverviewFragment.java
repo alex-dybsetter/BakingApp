@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ExpandableListView;
 
 import net.alexblass.bakingapp.models.Recipe;
@@ -23,7 +24,7 @@ import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
  * This Fragment allows users to view the detailed information about a Recipe.
  */
 
-public class RecipeDetailFragment<T> extends Fragment {
+public class RecipeOverviewFragment<T> extends Fragment {
     // The key to pass and get RecipeSteps from Intents
     public static final String RECIPE_STEP_KEY = "recipe_step";
 
@@ -47,12 +48,15 @@ public class RecipeDetailFragment<T> extends Fragment {
     private HashMap<String, List<T>> mSectionChildList;
 
     // Empty constructor
-    public RecipeDetailFragment() {
+    public RecipeOverviewFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_recipe_overview, container, false);
+
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
 
         Intent intentThatStartedThisActivity = getActivity().getIntent();
 
@@ -95,7 +99,7 @@ public class RecipeDetailFragment<T> extends Fragment {
                                 mSelectedStep = (RecipeStep)
                                         mAdapter.getChild(groupPosition, childPosition);
 
-                                RecipeStepFragment stepDetailFragment = new RecipeStepFragment();
+                                RecipeStepDetailFragment stepDetailFragment = new RecipeStepDetailFragment();
 
                                 Bundle args = new Bundle();
                                 args.putParcelable(RECIPE_STEP_KEY, mSelectedStep);

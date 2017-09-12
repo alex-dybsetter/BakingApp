@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -46,18 +45,18 @@ import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.models.RecipeStep;
 
 import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
-import static net.alexblass.bakingapp.RecipeDetailFragment.RECIPE_STEP_KEY;
+import static net.alexblass.bakingapp.RecipeOverviewFragment.RECIPE_STEP_KEY;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {RecipeStepFragment.OnFragmentInteractionListener} interface
+ * {RecipeStepDetailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the { RecipeStepFragment#newInstance} factory method to
+ * Use the { RecipeStepDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-//public class RecipeStepFragment extends Fragment {
+//public class RecipeStepDetailFragment extends Fragment {
 //    // TODO: Rename parameter arguments, choose names that match
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
@@ -69,7 +68,7 @@ import static net.alexblass.bakingapp.RecipeDetailFragment.RECIPE_STEP_KEY;
 //
 //    private OnFragmentInteractionListener mListener;
 //
-//    public RecipeStepFragment() {
+//    public RecipeStepDetailFragment() {
 //        // Required empty public constructor
 //    }
 //
@@ -79,11 +78,11 @@ import static net.alexblass.bakingapp.RecipeDetailFragment.RECIPE_STEP_KEY;
 //     *
 //     * @param param1 Parameter 1.
 //     * @param param2 Parameter 2.
-//     * @return A new instance of fragment RecipeStepFragment.
+//     * @return A new instance of fragment RecipeStepDetailFragment.
 //     */
 //    // TODO: Rename and change types and number of parameters
-//    public static RecipeStepFragment newInstance(String param1, String param2) {
-//        RecipeStepFragment fragment = new RecipeStepFragment();
+//    public static RecipeStepDetailFragment newInstance(String param1, String param2) {
+//        RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
 //        Bundle args = new Bundle();
 //        args.putString(ARG_PARAM1, param1);
 //        args.putString(ARG_PARAM2, param2);
@@ -146,7 +145,7 @@ import static net.alexblass.bakingapp.RecipeDetailFragment.RECIPE_STEP_KEY;
 //        void onFragmentInteraction(Uri uri);
 //    }
 //}
-public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListener {
+public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.EventListener {
     // The selected RecipeStep
     private RecipeStep mSelectedStep;
 
@@ -164,7 +163,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
 
 
     // Empty constructor
-    public RecipeStepFragment() {
+    public RecipeStepDetailFragment() {
     }
 
     @Override
@@ -291,7 +290,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
 
     // Create a new StepDetailFragment
     private void launchNewFragment(Recipe recipe, RecipeStep step){
-        RecipeStepFragment stepDetailFragment = new RecipeStepFragment();
+        RecipeStepDetailFragment stepDetailFragment = new RecipeStepDetailFragment();
 
         Bundle args = new Bundle();
         args.putParcelable(RECIPE_STEP_KEY, step);

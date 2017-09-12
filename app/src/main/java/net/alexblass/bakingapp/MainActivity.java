@@ -12,6 +12,9 @@ public class MainActivity extends AppCompatActivity {
     // TODO: Use esspresso tests
     // TODO: Update widget to display ingredient list for given recipe
     // TODO: Implement favorite and share functionality
+    // TODO: On video full screen swipe, show app bars
+    // TODO: Enable video full screen and shrink screen buttons
+    // TODO: Enable view rest of the content on landscape
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

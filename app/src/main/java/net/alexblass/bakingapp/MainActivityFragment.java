@@ -151,7 +151,7 @@ public class MainActivityFragment extends Fragment
     // Respond to click events by launching the detail activity
     @Override
     public void onItemClick(View view, int position) {
-        Intent detailIntent = new Intent(getActivity(), RecipeDetailActivity.class);
+        Intent detailIntent = new Intent(getActivity(), RecipeOverviewActivity.class);
 
         Recipe selectedRecipe = mAdapter.getItem(position);
         detailIntent.putExtra(RECIPE_KEY, selectedRecipe);
