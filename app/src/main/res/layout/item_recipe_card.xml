@@ -54,7 +54,7 @@
 
         <TextView
             android:id="@+id/recipe_servings_tv"
-            style="@style/servingsSubtitle"
+            style="@style/plainText"
             tools:text="10 servings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

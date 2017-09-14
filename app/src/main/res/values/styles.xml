@@ -12,7 +12,7 @@
         <item name="android:layout_marginBottom">@dimen/small_padding</item>
     </style>
 
-    <style name="servingsSubtitle">
+    <style name="plainText">
         <item name="android:textSize">@dimen/base_text</item>
     </style>
 
@@ -41,6 +41,23 @@
     <style name="stepTitle">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/step_title</item>
+    </style>
+
+    <style name="widgetTitle" parent="recipeTitle">
+        <item name="android:textSize">@dimen/widget_title_text_size</item>
+        <item name="android:background">@drawable/widget_title_background</item>
+        <item name="android:paddingLeft">@dimen/widget_margin</item>
+        <item name="android:paddingRight">@dimen/widget_margin</item>
+        <item name="android:paddingTop">@dimen/widget_margin_small</item>
+        <item name="android:paddingBottom">@dimen/widget_margin_small</item>
+        <item name="android:layout_margin">@dimen/zero</item>
+    </style>
+
+    <style name="widgetSubtitle" parent="stepTitle">
+        <item name="android:textSize">@dimen/widget_subtitle_text_size</item>
+        <item name="android:layout_marginLeft">@dimen/widget_margin</item>
+        <item name="android:layout_marginRight">@dimen/widget_margin</item>
+        <item name="android:layout_marginBottom">@dimen/widget_margin</item>
     </style>
 
 </resources>

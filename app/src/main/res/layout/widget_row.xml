@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/small_padding">
+
+    <TextView
+        style="@style/plainText"
+        android:id="@+id/widget_ingredient_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/small_padding"
+        tools:text="Butter"/>
+
+    <TextView
+        style="@style/plainText"
+        android:id="@+id/widget_ingredient_quantity_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/small_padding"
+        tools:text="1"/>
+
+    <TextView
+        style="@style/plainText"
+        android:id="@+id/widget_ingredient_measurement_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Cup"/>
+
+</LinearLayout>

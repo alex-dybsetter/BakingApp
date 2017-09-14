@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/prompt"
-        style="@style/servingsSubtitle"
+        style="@style/plainText"
         android:textSize="@dimen/recipe_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
