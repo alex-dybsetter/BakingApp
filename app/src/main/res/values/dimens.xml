@@ -19,8 +19,8 @@
 
     <!--One row-->
     <dimen name="widget_min_height">40dp</dimen>
-    <!--One column-->
-    <dimen name="widget_min_width">40dp</dimen>
+    <!--3 columns-->
+    <dimen name="widget_min_width">180dp</dimen>
 
     <dimen name="exoplayer_margin">4dp</dimen>
     <dimen name="seekbar_height">32dp</dimen>
@@ -31,4 +31,6 @@
     <dimen name="text_margin">16dp</dimen>
 
     <dimen name="divider">1dp</dimen>
+
+    <dimen name="corner_radius">5dp</dimen>
 </resources>

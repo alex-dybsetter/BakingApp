@@ -1,6 +1,9 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Baking Time</string>
 
+    <!--The JSON url-->
+    <string name="query_url">https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json</string>
+
     <!--Display this string when there is no internet connectivity-->
     <string name="no_connection">No internet connection.</string>
     <!--Display this string when no recipes are found from the API-->
@@ -24,4 +27,9 @@
     <string name="positive_btn">OK</string>
 
     <string name="launch_error">There was a problem loading the application.</string>
+
+    <string name="widget_ingredients_title">Ingredients</string>
+
+    <string name="config_prompt">Select a recipe to display the ingredients list.</string>
+    <string name="make_selection">Select</string>
 </resources>

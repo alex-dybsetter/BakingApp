@@ -3,6 +3,7 @@ package net.alexblass.bakingapp.utilities;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
+import net.alexblass.bakingapp.R;
 import net.alexblass.bakingapp.models.Recipe;
 
 /**
@@ -12,8 +13,7 @@ import net.alexblass.bakingapp.models.Recipe;
 
 public class RecipeLoader extends AsyncTaskLoader<Recipe[]> {
     // The query URL
-    private String mUrl =
-            "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+    private String mUrl = getContext().getResources().getString(R.string.query_url);
 
     // Constructs a new RecipeLoader
     public RecipeLoader(Context context){

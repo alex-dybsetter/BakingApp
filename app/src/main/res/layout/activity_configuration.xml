@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/prompt"
+        style="@style/servingsSubtitle"
+        android:textSize="@dimen/recipe_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/config_prompt"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:layout_marginBottom="@dimen/vertical_margin"/>
+
+    <RelativeLayout
+        android:id="@+id/spinner_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:background="@drawable/spinner_background"
+        android:orientation="horizontal"
+        android:layout_below="@id/prompt">
+
+        <Spinner
+            android:id="@+id/recipe_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/horizontal_margin"
+            android:layout_marginRight="@dimen/horizontal_margin"
+            android:layout_centerVertical="true"
+            android:spinnerMode="dropdown" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/okButton"
+        style="@style/nav_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/positive_btn"
+        android:layout_below="@id/spinner_background"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

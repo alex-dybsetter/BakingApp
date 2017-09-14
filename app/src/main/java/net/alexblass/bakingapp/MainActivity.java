@@ -9,7 +9,6 @@ public class MainActivity extends AppCompatActivity {
     // TODO: Verify accessibility requirements
     // TODO: Add butterknife
     // TODO: Use esspresso tests
-    // TODO: Update widget to display ingredient list for given recipe
     // TODO: Implement favorite and share functionality
     // TODO: On video full screen swipe, show app bars
     // TODO: Enable video full screen and shrink screen buttons
