@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -49,6 +50,9 @@ public class ConfigurationActivity extends Activity {
     private int mAppWidgetId;
     // The shared preferences to store our recipe
     SharedPreferences mPrefs;
+
+    // TODO: Show preferences if already saved
+    // TODO: Update preferences if already saved and now overwritten
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +111,12 @@ public class ConfigurationActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                handleOkButton();
+                if (mRecipeOptions.getSelectedItemPosition() > 0) {
+                    handleOkButton();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.make_selection_prompt), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -100,9 +101,9 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
         ingredientListing.setTextViewText(R.id.widget_ingredient_name_tv,
                 mIngredients.get(position).getIngredientName());
-        ingredientListing.setTextViewText(R.id.ingredient_quantity_tv,
+        ingredientListing.setTextViewText(R.id.widget_ingredient_quantity_tv,
                 Long.toString(mIngredients.get(position).getQuantity()));
-        ingredientListing.setTextViewText(R.id.ingredient_measurement_tv,
+        ingredientListing.setTextViewText(R.id.widget_ingredient_measurement_tv,
                 mIngredients.get(position).getMeasurement());
 
         Intent widgetIntent = new Intent();
@@ -111,6 +112,8 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
         extras.putParcelable(INGREDIENT_KEY, mIngredients.get(position));
         widgetIntent.putExtras(extras);
         ingredientListing.setOnClickFillInIntent(R.id.widget_ingredient_name_tv, widgetIntent);
+        ingredientListing.setOnClickFillInIntent(R.id.widget_ingredient_quantity_tv, widgetIntent);
+        ingredientListing.setOnClickFillInIntent(R.id.widget_ingredient_measurement_tv, widgetIntent);
 
         return(ingredientListing);
     }

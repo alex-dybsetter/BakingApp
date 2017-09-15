@@ -14,8 +14,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import net.alexblass.bakingapp.ConfigurationActivity;
 import net.alexblass.bakingapp.MainActivity;
 import net.alexblass.bakingapp.R;
+import net.alexblass.bakingapp.RecipeOverviewActivity;
 import net.alexblass.bakingapp.models.Recipe;
 
 import static net.alexblass.bakingapp.ConfigurationActivity.PREFS_KEY;
@@ -57,13 +59,25 @@ public class BakingWidgetProvider extends AppWidgetProvider {
 
             widget.setTextViewText(R.id.widget_recipe_title, recipe.getName());
 
-            Intent clickIntent = new Intent(context, MainActivity.class);
-            PendingIntent clickPI=PendingIntent
+            // Launch the app when the user clicks the launcher button of the widget
+            Intent recipeIntent = new Intent(context, RecipeOverviewActivity.class);
+            recipeIntent.putExtra(RECIPE_KEY, recipe);
+            PendingIntent recipePI = PendingIntent
                     .getActivity(context, 0,
-                            clickIntent,
+                            recipeIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
 
-            widget.setPendingIntentTemplate(R.id.widget_ingredients_list, clickPI);
+            widget.setPendingIntentTemplate(R.id.widget_ingredients_list, recipePI);
+            widget.setOnClickPendingIntent(R.id.widget_launch_btn, recipePI);
+
+            // Launch the ConfigurationActivity when the user clicks the gear button
+            Intent configIntent = new Intent(context, ConfigurationActivity.class);
+            PendingIntent configPI = PendingIntent
+                    .getActivity(context, 0,
+                            configIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+
+            widget.setOnClickPendingIntent(R.id.widget_settings_btn, configPI);
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
         }

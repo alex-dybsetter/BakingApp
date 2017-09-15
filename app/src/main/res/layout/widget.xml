@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@drawable/widget_background">
 
     <!-- Empty view is show if list items are empty -->
@@ -18,13 +18,33 @@
         android:id="@+id/widget_ingredients_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@drawable/widget_title_background"
+        android:orientation="horizontal">
 
         <TextView
             style="@style/widgetTitle"
             android:id="@+id/widget_recipe_title"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/zero"
+            android:layout_weight="1"
             android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/widget_settings_btn"
+            style="@style/widgetBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_settings_white_18dp"
+            android:clickable="true"/>
+
+        <ImageButton
+            android:id="@+id/widget_launch_btn"
+            style="@style/widgetBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_launch_white_18dp"
+            android:clickable="true"/>
+
+    </LinearLayout>
 
         <TextView
             style="@style/widgetSubtitle"
@@ -35,9 +55,7 @@
 
         <ListView
             android:id="@+id/widget_ingredients_list"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-
-    </LinearLayout>
 
 </LinearLayout>
