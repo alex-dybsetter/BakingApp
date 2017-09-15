@@ -3,7 +3,9 @@ package net.alexblass.bakingapp;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.utilities.QueryUtils;
 import net.alexblass.bakingapp.utilities.WidgetService;
@@ -23,6 +27,7 @@ import java.util.List;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
+import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
 
 /**
  * An Activity that allows users to configure their widget settings to choose a Recipe.
@@ -30,12 +35,20 @@ import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 
 public class ConfigurationActivity extends Activity {
 
+    public static final String PREFS_KEY = "prefs";
+
     // An Array of Recipes pulled from the network JSON url
-    Recipe[] mRecipesArray;
+    private Recipe[] mRecipesArray;
     // A list of the Recipe names
-    List<String> mRecipesNamesList;
+    private List<String> mRecipesNamesList;
     // The spinner of Recipe options
-    Spinner mRecipeOptions;
+    private Spinner mRecipeOptions;
+    // Selected Recipe
+    private Recipe mSelectedRecipe;
+    // The widget ID
+    private int mAppWidgetId;
+    // The shared preferences to store our recipe
+    SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +56,8 @@ public class ConfigurationActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuration);
         setResult(RESULT_CANCELED);
+
+        mPrefs = getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
 
         initListViews();
     }
@@ -86,28 +101,30 @@ public class ConfigurationActivity extends Activity {
         adapter.add(getString(R.string.make_selection));
 
         mRecipeOptions.setAdapter(adapter);
-        mRecipeOptions.setSelection(0);
 
         Button okButton = (Button) findViewById(R.id.okButton);
         okButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 handleOkButton();
             }
         });
 
     }
 
-    // TODO: Pass selected Recipe data to widget
-    // TODO: Display Recipe ingredients in ListView widget
-
     private void handleOkButton() {
+        mSelectedRecipe = mRecipesArray[mRecipeOptions.getSelectedItemPosition() - 1];
+
+        // Save the Recipe to SharedPreferences by making it a GSON
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String recipeJson = gson.toJson(mSelectedRecipe);
+        prefsEditor.putString(RECIPE_KEY, recipeJson);
+        prefsEditor.commit();
+
         showAppWidget();
     }
-
-    int mAppWidgetId;
 
     private void showAppWidget() {
 
@@ -132,14 +149,14 @@ public class ConfigurationActivity extends Activity {
             finish();
         }
         if (mAppWidgetId == INVALID_APPWIDGET_ID) {
-            Log.i("I am invalid", "I am invalid");
+            Log.i(ConfigurationActivity.class.getSimpleName(), "Invalid app widget ID");
             finish();
         }
 
     }
 
     // An AsyncTask to get the Recipe data off the main thread
-    class FetchRecipeTask extends AsyncTask<Recipe[], Recipe[], Recipe[]> {
+    private class FetchRecipeTask extends AsyncTask<Recipe[], Recipe[], Recipe[]> {
 
         @Override
         protected Recipe[] doInBackground(Recipe[]... args) {
