@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.utilities.QueryUtils;
-import net.alexblass.bakingapp.utilities.WidgetService;
+import net.alexblass.bakingapp.widget.WidgetService;
 
 import java.util.ArrayList;
 import java.util.List;

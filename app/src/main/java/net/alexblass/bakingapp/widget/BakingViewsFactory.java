@@ -1,4 +1,4 @@
-package net.alexblass.bakingapp.utilities;
+package net.alexblass.bakingapp.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -19,7 +18,6 @@ import java.util.List;
 
 import static net.alexblass.bakingapp.ConfigurationActivity.PREFS_KEY;
 import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
-import static net.alexblass.bakingapp.utilities.BakingWidgetProvider.INGREDIENT_KEY;
 
 /**
  * A class to pass data from the ConfigurationActivity to the widget.
@@ -109,7 +107,7 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
         Intent widgetIntent = new Intent();
         Bundle extras = new Bundle();
 
-        extras.putParcelable(INGREDIENT_KEY, mIngredients.get(position));
+        extras.putParcelable(BakingWidgetProvider.INGREDIENT_KEY, mIngredients.get(position));
         widgetIntent.putExtras(extras);
         ingredientListing.setOnClickFillInIntent(R.id.widget_ingredient_name_tv, widgetIntent);
         ingredientListing.setOnClickFillInIntent(R.id.widget_ingredient_quantity_tv, widgetIntent);

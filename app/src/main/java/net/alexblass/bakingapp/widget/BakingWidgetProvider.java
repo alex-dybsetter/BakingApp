@@ -1,24 +1,21 @@
-package net.alexblass.bakingapp.utilities;
+package net.alexblass.bakingapp.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import net.alexblass.bakingapp.ConfigurationActivity;
-import net.alexblass.bakingapp.MainActivity;
 import net.alexblass.bakingapp.R;
 import net.alexblass.bakingapp.RecipeOverviewActivity;
 import net.alexblass.bakingapp.models.Recipe;
+import net.alexblass.bakingapp.widget.WidgetService;
 
 import static net.alexblass.bakingapp.ConfigurationActivity.PREFS_KEY;
 import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
@@ -40,6 +37,8 @@ public class BakingWidgetProvider extends AppWidgetProvider {
 
         // Get the saved Recipe from the ConfigurationActivity
         mPrefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        // TODO: Bug - this is getting called before the user makes a selection.
+        // This results in the wrong title being set to the widget.
 
         Gson gson = new Gson();
         String json = mPrefs.getString(RECIPE_KEY, "");

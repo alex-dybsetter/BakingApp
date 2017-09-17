@@ -17,7 +17,7 @@
 
         <!-- Receiver for the app widget -->
         <receiver android:label="@string/app_name"
-            android:name=".utilities.BakingWidgetProvider">
+            android:name=".widget.BakingWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -25,7 +25,7 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <service android:name=".utilities.WidgetService"
+        <service android:name=".widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <!--Widget configuration-->
@@ -34,6 +34,12 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
+
+        <!--Content provider-->
+        <provider
+            android:authorities="net.alexblass.bakingapp"
+            android:name=".data.RecipesProvider"
+            android:exported="false" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

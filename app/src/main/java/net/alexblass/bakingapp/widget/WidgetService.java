@@ -1,4 +1,4 @@
-package net.alexblass.bakingapp.utilities;
+package net.alexblass.bakingapp.widget;
 
 import android.content.Intent;
 import android.widget.RemoteViewsService;
