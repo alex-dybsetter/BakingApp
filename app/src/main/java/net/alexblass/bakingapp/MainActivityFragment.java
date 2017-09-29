@@ -22,8 +22,10 @@ import android.widget.TextView;
 
 import net.alexblass.bakingapp.data.IngredientsContract.IngredientEntry;
 import net.alexblass.bakingapp.data.RecipesContract.RecipeEntry;
+import net.alexblass.bakingapp.data.RecipeStepsContract.RecipeStepEntry;
 import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
+import net.alexblass.bakingapp.models.RecipeStep;
 import net.alexblass.bakingapp.utilities.RecipeAdapter;
 import net.alexblass.bakingapp.utilities.RecipeLoader;
 
@@ -151,6 +153,19 @@ public class MainActivityFragment extends Fragment
         Uri newUri = getActivity().getContentResolver().insert(IngredientEntry.CONTENT_URI, values);
     }
 
+    // Add a ingredient to the database
+    private void addStep(RecipeStep step, long recipeId){
+        ContentValues values = new ContentValues();
+        values.put(RecipeStepEntry.COLUMN_RECIPE_ID, recipeId);
+        values.put(RecipeStepEntry.COLUMN_RECIPE_STEP_ID, step.getId());
+        values.put(RecipeStepEntry.COLUMN_SHORT_DESCRIPTION, step.getShortDescription());
+        values.put(RecipeStepEntry.COLUMN_DESCRIPTION, step.getDescription());
+        values.put(RecipeStepEntry.COLUMN_STEP_IMG_URL, step.getImageUrl());
+        values.put(RecipeStepEntry.COLUMN_STEP_VIDEO_URL, step.getVideoUrl());
+
+        Uri newUri = getActivity().getContentResolver().insert(RecipeStepEntry.CONTENT_URI, values);
+    }
+
     // Updates the table so that we have the most recent recipe data without adding duplicates
     private void updateTable(Recipe recipe, boolean isFave){
         // Get the Recipe by its source id since any user-added recipes will not have one
@@ -181,7 +196,12 @@ public class MainActivityFragment extends Fragment
 
                 // Add the Recipe Ingredients
                 for (Ingredient i : recipe.getIngredients()) {
-                    //addIngredient(i, recipeId);
+                    addIngredient(i, recipeId);
+                }
+
+                // Add the RecipeSteps
+                for (RecipeStep step : recipe.getSteps()) {
+                    addStep(step, recipeId);
                 }
             }
             cursor.close();

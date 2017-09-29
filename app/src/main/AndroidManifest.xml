@@ -47,6 +47,12 @@
             android:name=".data.IngredientsProvider"
             android:exported="false" />
 
+        <!--Content provider-->
+        <provider
+            android:authorities="net.alexblass.bakingapp.recipesteps"
+            android:name=".data.RecipeStepsProvider"
+            android:exported="false" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

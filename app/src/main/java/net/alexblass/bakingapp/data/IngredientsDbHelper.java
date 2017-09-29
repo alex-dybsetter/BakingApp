@@ -14,7 +14,7 @@ public class IngredientsDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "ingredients.db";
 
     // The version of the database schema
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     public IngredientsDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -43,7 +43,5 @@ public class RecipesContract {
 
         // Whether or not a Recipe is favorited
         public static final String COLUMN_IS_FAVORITED = "favorites";
-
-        // TODO: Implement steps as another table referencing this recipe ID
     }
 }
