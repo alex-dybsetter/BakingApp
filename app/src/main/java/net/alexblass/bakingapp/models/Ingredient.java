@@ -38,7 +38,7 @@ public class Ingredient implements Parcelable {
         return mIngredientName;
     }
 
-    // Required overrride method for Parcelable
+    // Required override method for Parcelable
     @Override
     public int describeContents() {
         return 0;

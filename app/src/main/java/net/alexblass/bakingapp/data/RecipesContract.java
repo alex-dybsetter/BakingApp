@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
 public class RecipesContract {
 
     // The content authority
-    public static final String CONTENT_AUTHORITY = "net.alexblass.bakingapp";
+    public static final String CONTENT_AUTHORITY = "net.alexblass.bakingapp.recipes";
 
     // The base URI for the table
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
@@ -43,8 +43,6 @@ public class RecipesContract {
 
         // Whether or not a Recipe is favorited
         public static final String COLUMN_IS_FAVORITED = "favorites";
-
-        // TODO: Implement ingredients as another table referencing this recipe ID
 
         // TODO: Implement steps as another table referencing this recipe ID
     }

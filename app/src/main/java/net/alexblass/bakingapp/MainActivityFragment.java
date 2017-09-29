@@ -2,6 +2,7 @@ package net.alexblass.bakingapp;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -13,12 +14,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import net.alexblass.bakingapp.data.IngredientsContract.IngredientEntry;
 import net.alexblass.bakingapp.data.RecipesContract.RecipeEntry;
+import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.utilities.RecipeAdapter;
 import net.alexblass.bakingapp.utilities.RecipeLoader;
@@ -122,7 +126,7 @@ public class MainActivityFragment extends Fragment
     }
 
     // Add a recipe to the database
-    private void addRecipe(Recipe recipe, boolean isFave){
+    private long addRecipe(Recipe recipe, boolean isFave){
         ContentValues values = new ContentValues();
         values.put(RecipeEntry.COLUMN_RECIPE_SOURCE_ID, recipe.getId());
         values.put(RecipeEntry.COLUMN_NAME, recipe.getName());
@@ -131,6 +135,20 @@ public class MainActivityFragment extends Fragment
         values.put(RecipeEntry.COLUMN_IS_FAVORITED, isFave);
 
         Uri newUri = getActivity().getContentResolver().insert(RecipeEntry.CONTENT_URI, values);
+
+        // Return the Recipe ID
+        return ContentUris.parseId(newUri);
+    }
+
+    // Add a ingredient to the database
+    private void addIngredient(Ingredient ingredient, long recipeId){
+        ContentValues values = new ContentValues();
+        values.put(IngredientEntry.COLUMN_RECIPE_ID, recipeId);
+        values.put(IngredientEntry.COLUMN_QUANTITY, ingredient.getQuantity());
+        values.put(IngredientEntry.COLUMN_MEASUREMENT, ingredient.getMeasurement());
+        values.put(IngredientEntry.COLUMN_NAME, ingredient.getIngredientName());
+
+        Uri newUri = getActivity().getContentResolver().insert(IngredientEntry.CONTENT_URI, values);
     }
 
     // Updates the table so that we have the most recent recipe data without adding duplicates
@@ -156,11 +174,18 @@ public class MainActivityFragment extends Fragment
         );
 
         // Only add the recipe to the database if it does not already exist
-        if (!cursor.moveToFirst()){
-            addRecipe(recipe, isFave);
-        }
+        if (cursor != null) {
+            long recipeId = -1;
+            if (!cursor.moveToFirst()) {
+                recipeId = addRecipe(recipe, isFave);
 
-        cursor.close();
+                // Add the Recipe Ingredients
+                for (Ingredient i : recipe.getIngredients()) {
+                    //addIngredient(i, recipeId);
+                }
+            }
+            cursor.close();
+        }
     }
 
     // Load the data from the JSON file URL

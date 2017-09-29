@@ -16,52 +16,52 @@ import android.util.Log;
  * A ContentProvider to access our data.
  */
 
-public class RecipesProvider extends ContentProvider {
+public class IngredientsProvider extends ContentProvider {
     // URI codes
-    public static final int CODE_RECIPES_TABLE = 100;
-    public static final int CODE_RECIPE_ID = 101;
+    public static final int CODE_INGREDIENTS_TABLE = 100;
+    public static final int CODE_INGREDIENTS_ID = 101;
 
-    private static final int RECIPE_ID_INDEX = 1;
+    private static final int INGREDIENT_ID_INDEX = 1;
 
     // URI matcher to help match the codes with the URI
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    private RecipesDbHelper mOpenHelper;
+    private IngredientsDbHelper mOpenHelper;
 
     // Tag for error messages
-    private static final String LOG_TAG = RecipesProvider.class.getSimpleName();
+    private static final String LOG_TAG = IngredientsProvider.class.getSimpleName();
 
     // Set the URI codes to determine what data is requested
     public static UriMatcher buildUriMatcher(){
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = RecipesContract.CONTENT_AUTHORITY;
+        final String authority = IngredientsContract.CONTENT_AUTHORITY;
 
-        // URI for the database of all recipes
-        matcher.addURI(authority, RecipesContract.PATH_RECIPES, CODE_RECIPES_TABLE);
+        // URI for the database of all Ingredients
+        matcher.addURI(authority, IngredientsContract.PATH_INGREDIENTS, CODE_INGREDIENTS_TABLE);
 
-        // URI for the database of a single recipe
-        matcher.addURI(authority, RecipesContract.PATH_RECIPES + "/#", CODE_RECIPE_ID);
+        // URI for the database of a single Ingredient
+        matcher.addURI(authority, IngredientsContract.PATH_INGREDIENTS + "/#", CODE_INGREDIENTS_ID);
 
         return matcher;
     }
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = new RecipesDbHelper(getContext());
+        mOpenHelper = new IngredientsDbHelper(getContext());
         return true;
     }
 
-    // Insert a single Recipe to the database
+    // Insert a single Ingredient to the database
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         final int match = sUriMatcher.match(uri);
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         switch (match) {
-            case CODE_RECIPES_TABLE:
-                // Insert the Recipe
-                long id = db.insert(RecipesContract.RecipeEntry.TABLE_NAME, null, values);
+            case CODE_INGREDIENTS_TABLE:
+                // Insert the Ingredient
+                long id = db.insert(IngredientsContract.IngredientEntry.TABLE_NAME, null, values);
                 if (id == -1) {
                     Log.e(LOG_TAG, "Failed to insert row for " + uri);
                     return null;
@@ -75,7 +75,7 @@ public class RecipesProvider extends ContentProvider {
         }
     }
 
-    // Query the database for all the information or recipes by ID
+    // Query the database for all the ingredients by ID
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
@@ -85,27 +85,27 @@ public class RecipesProvider extends ContentProvider {
 
         Cursor cursor;
 
-         // Determine which URI to use
+        // Determine which URI to use
         switch (match){
-            // Get the Recipe by its ID
-            case CODE_RECIPE_ID:
-                String recipeIdString = uri.getLastPathSegment();
+            // Get the Ingredient by its ID
+            case CODE_INGREDIENTS_ID:
+                String ingredientIdString = uri.getLastPathSegment();
 
-                String[] selectionArguments = new String[]{recipeIdString};
+                String[] selectionArguments = new String[]{ingredientIdString};
 
                 cursor = db.query(
-                        RecipesContract.RecipeEntry.TABLE_NAME,
+                        IngredientsContract.IngredientEntry.TABLE_NAME,
                         projection,
-                        RecipesContract.RecipeEntry._ID + "=?",
+                        IngredientsContract.IngredientEntry._ID + "=? ",
                         selectionArgs,
                         null,
                         null,
                         sortOrder
                 );
                 break;
-            case CODE_RECIPES_TABLE:
+            case CODE_INGREDIENTS_TABLE:
                 cursor = db.query(
-                        RecipesContract.RecipeEntry.TABLE_NAME,
+                        IngredientsContract.IngredientEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -122,7 +122,7 @@ public class RecipesProvider extends ContentProvider {
         return cursor;
     }
 
-    // Delete a Recipe from the database
+    // Delete a Ingredient from the database
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -132,13 +132,13 @@ public class RecipesProvider extends ContentProvider {
 
         switch (match){
 
-            // Get the ID for a single recipe and delete it
-            case CODE_RECIPE_ID:
-                String recipeId = uri.getPathSegments().get(RECIPE_ID_INDEX);
+            // Get the ID for a single Ingredient and delete it
+            case CODE_INGREDIENTS_ID:
+                String ingredientId = uri.getPathSegments().get(INGREDIENT_ID_INDEX);
                 rowDeleted = db.delete(
-                        RecipesContract.RecipeEntry.TABLE_NAME,
-                        RecipesContract.RecipeEntry._ID + "=?",
-                        new String[] {recipeId}
+                        IngredientsContract.IngredientEntry.TABLE_NAME,
+                        IngredientsContract.IngredientEntry._ID + "=?",
+                        new String[] {ingredientId}
                 );
                 break;
             default:
@@ -161,15 +161,16 @@ public class RecipesProvider extends ContentProvider {
         int count = 0;
         switch (match) {
             // Update the whole table
-            case CODE_RECIPES_TABLE:
-                count = db.update(RecipesContract.RecipeEntry.TABLE_NAME, values, selection, selectionArgs);
+            case CODE_INGREDIENTS_TABLE:
+                count = db.update(IngredientsContract.IngredientEntry.TABLE_NAME,
+                        values, selection, selectionArgs);
                 break;
             // Update individual table rows
-            case CODE_RECIPE_ID:
-                count = db.update(RecipesContract.RecipeEntry.TABLE_NAME,
+            case CODE_INGREDIENTS_ID:
+                count = db.update(IngredientsContract.IngredientEntry.TABLE_NAME,
                         values,
-                        RecipesContract.RecipeEntry._ID + "=" +
-                                uri.getPathSegments().get(RECIPE_ID_INDEX) +
+                        IngredientsContract.IngredientEntry._ID + "=" +
+                                uri.getPathSegments().get(INGREDIENT_ID_INDEX) +
                                 (!TextUtils.isEmpty(selection) ? " AND (" +
                                         selection + ')' : ""),
                         selectionArgs);

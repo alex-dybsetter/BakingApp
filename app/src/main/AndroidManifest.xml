@@ -37,8 +37,14 @@
 
         <!--Content provider-->
         <provider
-            android:authorities="net.alexblass.bakingapp"
+            android:authorities="net.alexblass.bakingapp.recipes"
             android:name=".data.RecipesProvider"
+            android:exported="false" />
+
+        <!--Content provider-->
+        <provider
+            android:authorities="net.alexblass.bakingapp.ingredients"
+            android:name=".data.IngredientsProvider"
             android:exported="false" />
 
         <activity android:name=".MainActivity">

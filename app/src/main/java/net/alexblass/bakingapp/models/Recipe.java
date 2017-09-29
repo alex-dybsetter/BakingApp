@@ -62,7 +62,7 @@ public class Recipe implements Parcelable{
         return mImageUrl;
     }
 
-    // Required overrride method for Parcelable
+    // Required override method for Parcelable
     @Override
     public int describeContents() {
         return 0;
