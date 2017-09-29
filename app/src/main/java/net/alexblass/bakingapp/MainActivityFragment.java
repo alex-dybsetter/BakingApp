@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,7 +142,7 @@ public class MainActivityFragment extends Fragment
     }
 
     // Add a ingredient to the database
-    private void addIngredient(Ingredient ingredient, long recipeId){
+    private long addIngredient(Ingredient ingredient, long recipeId){
         ContentValues values = new ContentValues();
         values.put(IngredientEntry.COLUMN_RECIPE_ID, recipeId);
         values.put(IngredientEntry.COLUMN_QUANTITY, ingredient.getQuantity());
@@ -151,10 +150,13 @@ public class MainActivityFragment extends Fragment
         values.put(IngredientEntry.COLUMN_NAME, ingredient.getIngredientName());
 
         Uri newUri = getActivity().getContentResolver().insert(IngredientEntry.CONTENT_URI, values);
+
+        // Return the Ingredient ID
+        return ContentUris.parseId(newUri);
     }
 
     // Add a ingredient to the database
-    private void addStep(RecipeStep step, long recipeId){
+    private long addStep(RecipeStep step, long recipeId){
         ContentValues values = new ContentValues();
         values.put(RecipeStepEntry.COLUMN_RECIPE_ID, recipeId);
         values.put(RecipeStepEntry.COLUMN_RECIPE_STEP_ID, step.getId());
@@ -164,6 +166,8 @@ public class MainActivityFragment extends Fragment
         values.put(RecipeStepEntry.COLUMN_STEP_VIDEO_URL, step.getVideoUrl());
 
         Uri newUri = getActivity().getContentResolver().insert(RecipeStepEntry.CONTENT_URI, values);
+        // Return the Step ID
+        return ContentUris.parseId(newUri);
     }
 
     // Updates the table so that we have the most recent recipe data without adding duplicates

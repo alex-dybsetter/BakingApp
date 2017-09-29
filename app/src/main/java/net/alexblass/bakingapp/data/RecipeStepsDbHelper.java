@@ -14,7 +14,7 @@ public class RecipeStepsDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "recipesteps.db";
 
     // The version of the database schema
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
 
     public RecipeStepsDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,8 +30,8 @@ public class RecipeStepsDbHelper extends SQLiteOpenHelper {
                         RecipeStepsContract.RecipeStepEntry.COLUMN_RECIPE_ID + " REAL NOT NULL, " +
                         RecipeStepsContract.RecipeStepEntry.COLUMN_RECIPE_STEP_ID + " INTEGER NOT NULL, " +
                         RecipeStepsContract.RecipeStepEntry.COLUMN_SHORT_DESCRIPTION + " TEXT, " +
-                        RecipeStepsContract.RecipeStepEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
-                        RecipeStepsContract.RecipeStepEntry.COLUMN_STEP_IMG_URL + " TEXT NOT NULL, " +
+                        RecipeStepsContract.RecipeStepEntry.COLUMN_DESCRIPTION + " TEXT, " +
+                        RecipeStepsContract.RecipeStepEntry.COLUMN_STEP_IMG_URL + " TEXT, " +
                         RecipeStepsContract.RecipeStepEntry.COLUMN_STEP_VIDEO_URL + " TEXT" +
                         ");";
 
@@ -40,7 +40,7 @@ public class RecipeStepsDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + RecipesContract.RecipeEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + RecipeStepsContract.RecipeStepEntry.TABLE_NAME);
         onCreate(db);
     }
 }

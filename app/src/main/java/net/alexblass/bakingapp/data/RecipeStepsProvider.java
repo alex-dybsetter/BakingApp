@@ -61,7 +61,7 @@ public class RecipeStepsProvider extends ContentProvider {
         switch (match) {
             case CODE_STEPS_TABLE:
                 // Insert the RecipeStep
-                long id = db.insert(RecipesContract.RecipeEntry.TABLE_NAME, null, values);
+                long id = db.insert(RecipeStepsContract.RecipeStepEntry.TABLE_NAME, null, values);
                 if (id == -1) {
                     Log.e(LOG_TAG, "Failed to insert row for " + uri);
                     return null;
