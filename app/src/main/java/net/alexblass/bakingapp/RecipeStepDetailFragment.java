@@ -1,10 +1,14 @@
 package net.alexblass.bakingapp;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -118,41 +122,54 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
                 mTitleTv.setText(mSelectedStep.getShortDescription());
                 mDescriptionTv.setText(mSelectedStep.getDescription());
 
-                // Check if there is an image to the step
-                if (!mSelectedStep.getImageUrl().equals("")){
-                    mLoadingIndicator.setVisibility(View.GONE);
-                    mThumbnailImageView.setVisibility(View.VISIBLE);
-                    Picasso.with(getActivity())
-                            .load(mSelectedStep.getImageUrl())
-                            .into(mThumbnailImageView);
-                }
+                ConnectivityManager cm = (ConnectivityManager) getActivity()
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                // Check if there is a video to the step
-                if (!mSelectedStep.getVideoUrl().equals("")){
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
 
-                    // If the device is in landscape and is not a tablet, make the video full screen
-                    if (!getResources().getBoolean(R.bool.isTablet)) {
-                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                            ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-                        } else {
-                            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                            ((AppCompatActivity) getActivity()).getSupportActionBar().show();
-                        }
+
+                // Only display the video or image if there is Internet connection
+                if (isConnected) {
+
+                    // Check if there is an image to the step
+                    if (!mSelectedStep.getImageUrl().equals("")) {
+                        mLoadingIndicator.setVisibility(View.GONE);
+                        mThumbnailImageView.setVisibility(View.VISIBLE);
+                        Picasso.with(getActivity())
+                                .load(mSelectedStep.getImageUrl())
+                                .into(mThumbnailImageView);
                     }
 
-                    Uri vidUri = Uri.parse(mSelectedStep.getVideoUrl());
+                    // Check if there is a video to the step
+                    if (!mSelectedStep.getVideoUrl().equals("")) {
 
-                    MediaSource videoSource = new ExtractorMediaSource(vidUri,
-                            dataSourceFactory, extractorsFactory, null, null);
+                        // If the device is in landscape and is not a tablet, make the video full screen
+                        if (!getResources().getBoolean(R.bool.isTablet)) {
+                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+                            } else {
+                                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+                            }
+                        }
 
-                    mExoPlayer.addListener(this);
-                    mExoPlayer.prepare(videoSource);
-                    mExoPlayer.setPlayWhenReady(true);
-                }
+                        Uri vidUri = Uri.parse(mSelectedStep.getVideoUrl());
 
-                // If there's no video or image, hide the loading indicator
-                if (mSelectedStep.getImageUrl().equals("") && mSelectedStep.getVideoUrl().equals("")){
+                        MediaSource videoSource = new ExtractorMediaSource(vidUri,
+                                dataSourceFactory, extractorsFactory, null, null);
+
+                        mExoPlayer.addListener(this);
+                        mExoPlayer.prepare(videoSource);
+                        mExoPlayer.setPlayWhenReady(true);
+                    }
+
+                    // If there's no video or image, hide the loading indicator
+                    if (mSelectedStep.getImageUrl().equals("") && mSelectedStep.getVideoUrl().equals("")) {
+                        mLoadingIndicator.setVisibility(View.GONE);
+                    }
+                } else {
                     mLoadingIndicator.setVisibility(View.GONE);
                 }
 
