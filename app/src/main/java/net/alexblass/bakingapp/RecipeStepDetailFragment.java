@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -48,15 +47,14 @@ import com.squareup.picasso.Picasso;
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.models.RecipeStep;
 
-import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_STEP_KEY;
 
 /**
  * This Fragment allows users to view the detailed information about a RecipeStep.
  */
 
 public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.EventListener {
-    // The key to pass and get RecipeSteps from Intents
-    public static final String RECIPE_STEP_KEY = "recipe_step";
 
     // The selected RecipeStep
     private RecipeStep mSelectedStep;

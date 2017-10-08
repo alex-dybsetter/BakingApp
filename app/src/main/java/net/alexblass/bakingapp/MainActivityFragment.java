@@ -28,6 +28,8 @@ import net.alexblass.bakingapp.models.RecipeStep;
 import net.alexblass.bakingapp.utilities.RecipeAdapter;
 import net.alexblass.bakingapp.utilities.RecipeLoader;
 
+import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
+
 /**
  * This fragment allows users to view a list of recipes
  * in a RecyclerView that are pulled from a JSON file.
@@ -36,8 +38,6 @@ import net.alexblass.bakingapp.utilities.RecipeLoader;
 public class MainActivityFragment extends Fragment
         implements RecipeAdapter.ItemClickListener,
         LoaderManager.LoaderCallbacks<Recipe[]>{
-    // The key to pass and get Recipes from Intents
-    public static final String RECIPE_KEY = "recipe";
 
     // The ID for the recipe loader
     private static final int RECIPE_LOADER_ID = 0;

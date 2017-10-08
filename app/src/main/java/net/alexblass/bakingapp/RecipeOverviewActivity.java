@@ -17,16 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import static android.support.v4.app.NavUtils.navigateUpFromSameTask;
-import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_STEP_KEY;
 
 /**
  * The activity that displays the detailed information about a Recipe.
  */
 
 public class RecipeOverviewActivity<T> extends AppCompatActivity {
-
-    // The key to pass and get RecipeSteps from Intents
-    public static final String RECIPE_STEP_KEY = "recipe_step";
 
     // The Recipe that we're viewing
     private Recipe mSelectedRecipe;

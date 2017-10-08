@@ -8,16 +8,14 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.google.gson.Gson;
-
 import net.alexblass.bakingapp.R;
+import net.alexblass.bakingapp.data.RecipeQueryUtils;
 import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
 
 import java.util.List;
 
-import static net.alexblass.bakingapp.ConfigurationActivity.PREFS_KEY;
-import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.PREFS_KEY;
 
 /**
  * A class to pass data from the ConfigurationActivity to the widget.
@@ -26,9 +24,9 @@ import static net.alexblass.bakingapp.MainActivityFragment.RECIPE_KEY;
 public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     // The context
-    private Context context = null;
-    // The app widget
-    private int appWidgetId;
+    private Context mContext = null;
+    // The app widget's unique ID
+    private int mAppWidgetId;
     // The selected Recipe
     private Recipe mSelectedRecipe;
     // The Ingredients in the Recipe;
@@ -37,19 +35,20 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
     SharedPreferences mPrefs;
 
     public BakingViewsFactory(Context context, Intent intent) {
-        this.context = context;
-        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+        this.mContext = context;
+        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
     @Override
     public void onCreate() {
         // Get the saved Recipe from the ConfigurationActivity
-        mPrefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        mPrefs = mContext.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
 
-        Gson gson = new Gson();
-        String json = mPrefs.getString(RECIPE_KEY, "");
-        mSelectedRecipe = gson.fromJson(json, Recipe.class);
+        int recipeId = mPrefs.getInt("widget" + mAppWidgetId, -1);
+
+        RecipeQueryUtils utils = new RecipeQueryUtils(mContext);
+        mSelectedRecipe = utils.getRecipe(recipeId);
         mIngredients = mSelectedRecipe.getIngredients();
     }
 
@@ -94,7 +93,8 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews ingredientListing = new RemoteViews(context.getPackageName(),
+
+        RemoteViews ingredientListing = new RemoteViews(mContext.getPackageName(),
         R.layout.widget_row);
 
         ingredientListing.setTextViewText(R.id.widget_ingredient_name_tv,

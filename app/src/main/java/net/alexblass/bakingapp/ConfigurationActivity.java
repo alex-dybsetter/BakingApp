@@ -3,6 +3,7 @@ package net.alexblass.bakingapp;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -16,11 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
-import net.alexblass.bakingapp.data.RecipeQueryUtils;
 import net.alexblass.bakingapp.data.RecipesContract.RecipeEntry;
-import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.widget.WidgetService;
 
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ import java.util.List;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
+import static net.alexblass.bakingapp.data.constants.Keys.PREFS_KEY;
 
 /**
  * An Activity that allows users to configure their widget settings to choose a Recipe.
@@ -35,16 +33,14 @@ import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 
 public class ConfigurationActivity extends Activity {
 
-    public static final String PREFS_KEY = "prefs";
-
     // A list of the Recipe names
     private List<String> mRecipesNamesList;
     // A list of the Recipe IDs
     private List<Integer> mRecipeIdsList;
     // The spinner of Recipe options
     private Spinner mRecipeOptions;
-    // Selected Recipe
-    private Recipe mSelectedRecipe;
+    // Recipe ID to be saved in SharedPreferences
+    private int mSelectedRecipeId;
     // The widget ID
     private int mAppWidgetId;
     // The shared preferences to store our recipe
@@ -60,7 +56,7 @@ public class ConfigurationActivity extends Activity {
         setContentView(R.layout.activity_configuration);
         setResult(RESULT_CANCELED);
 
-//        mPrefs = getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        mPrefs = getApplicationContext().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
 
         initListViews();
     }
@@ -70,9 +66,6 @@ public class ConfigurationActivity extends Activity {
         mRecipeOptions = (Spinner) findViewById(R.id.recipe_spinner);
         mRecipesNamesList = new ArrayList<>();
         mRecipeIdsList = new ArrayList<>();
-
-        // Run a new FetchRecipeTask to set our list with the Recipe data
-//        new FetchRecipeTask().execute();
 
         // Populate the Spinner with the Recipe data
         ArrayAdapter<String> adapter =
@@ -107,11 +100,7 @@ public class ConfigurationActivity extends Activity {
         // Get the Recipes in our Provider
         String[] projection = {
                 RecipeEntry._ID,
-//                RecipeEntry.COLUMN_RECIPE_SOURCE_ID,
                 RecipeEntry.COLUMN_NAME
-//                RecipeEntry.COLUMN_SERVINGS,
-//                RecipeEntry.COLUMN_IMG_URL,
-//                RecipeEntry.COLUMN_IS_FAVORITED
         };
 
         // Check if the recipe exists in the database
@@ -168,24 +157,12 @@ public class ConfigurationActivity extends Activity {
     private void handleOkButton() {
         // Get the ID.  It should be the same position as the list of names in
         // the spinner, except offset by 1 for the index 0 = "Select"
-        int id = mRecipeIdsList.get(mRecipeOptions.getSelectedItemPosition() - 1);
-
-        RecipeQueryUtils utils = new RecipeQueryUtils(getApplicationContext());
-        mSelectedRecipe = utils.getRecipe(id);
-        Log.e("recipe id", id + " " + mSelectedRecipe.getName() + " steps " + mSelectedRecipe.getSteps().size());
-
-        // Save the Recipe to SharedPreferences by making it a GSON
-//        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-//        Gson gson = new Gson();
-//        String recipeJson = gson.toJson(mSelectedRecipe);
-//        prefsEditor.putString(RECIPE_KEY, recipeJson);
-//        prefsEditor.commit();
+        mSelectedRecipeId = mRecipeIdsList.get(mRecipeOptions.getSelectedItemPosition() - 1);
 
         showAppWidget();
     }
 
     private void showAppWidget() {
-
         mAppWidgetId = INVALID_APPWIDGET_ID;
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -196,6 +173,10 @@ public class ConfigurationActivity extends Activity {
             AppWidgetProviderInfo providerInfo = AppWidgetManager.getInstance(
                     getBaseContext()).getAppWidgetInfo(mAppWidgetId);
             String appWidgetLabel = providerInfo.label;
+
+            SharedPreferences.Editor prefsEditor = mPrefs.edit();
+            prefsEditor.putInt("widget" + mAppWidgetId, mSelectedRecipeId);
+            prefsEditor.commit();
 
             Intent startService = new Intent(ConfigurationActivity.this,
                     WidgetService.class);
@@ -210,6 +191,5 @@ public class ConfigurationActivity extends Activity {
             Log.i(ConfigurationActivity.class.getSimpleName(), "Invalid app widget ID");
             finish();
         }
-
     }
 }
