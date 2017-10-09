@@ -1,6 +1,7 @@
 package net.alexblass.bakingapp.utilities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +15,9 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import net.alexblass.bakingapp.R;
+import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
+import net.alexblass.bakingapp.models.RecipeStep;
 
 /**
  * An Adapter to display the Recipes in MainActivityFragment in a CardView list.
@@ -112,6 +115,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         private TextView name;
         private TextView servings;
         private ImageButton favoriteBtn;
+        private ImageButton shareBtn;
+        private Recipe selectedRecipe;
 
         public ViewHolder(View itemView){
             super(itemView);
@@ -121,11 +126,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             name = (TextView) itemView.findViewById(R.id.recipe_name_tv);
             servings = (TextView) itemView.findViewById(R.id.recipe_servings_tv);
             favoriteBtn = (ImageButton) itemView.findViewById(R.id.favorite_btn);
+            shareBtn = (ImageButton) itemView.findViewById(R.id.share_btn);
 
             favoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Recipe selectedRecipe = mAllRecipies[getAdapterPosition()];
+                selectedRecipe = mAllRecipies[getAdapterPosition()];
 
                 // We are changing the existing value to the opposite
                 boolean isFavorite = !selectedRecipe.getIsFavorite();
@@ -138,7 +144,37 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 utils.updateFavorite(selectedRecipe.getDbId(), isFavorite);
             }});
 
-            // TODO: Implement sharing button
+            shareBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedRecipe = mAllRecipies[getAdapterPosition()];
+
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+
+                    String shareBody = mContext.getString(R.string.share_subject, selectedRecipe.getName())
+                            +"\n\n"+ mContext.getString(R.string.ingredients_title) +"\n";
+
+                    for (Ingredient i : selectedRecipe.getIngredients()){
+                        shareBody += i.getIngredientName() +" "+ i.getQuantity() +" "+
+                                i.getMeasurement() +"\n";
+                    }
+
+                    shareBody += "\n"+ mContext.getString(R.string.steps_title) +"\n";
+
+                    for (RecipeStep r : selectedRecipe.getSteps()){
+                        shareBody += r.getDescription() +"\n";
+                    }
+
+                    shareBody += "\n\n"+ mContext.getString(R.string.share_attribution);
+
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+                            mContext.getString(R.string.share_subject, selectedRecipe.getName()));
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+
+                    mContext.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                }
+            });
         }
 
         @Override

@@ -33,4 +33,7 @@
     <string name="config_prompt">Select a recipe to display the ingredients list.</string>
     <string name="make_selection">Select</string>
     <string name="make_selection_prompt">Please select a recipe.</string>
+
+    <string name="share_subject">Baking Time: <xliff:g id="mins">%1$s</xliff:g> Recipe</string>
+    <string name="share_attribution">Sent using Baking Time on Android</string>
 </resources>
