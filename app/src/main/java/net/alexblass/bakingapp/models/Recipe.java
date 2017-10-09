@@ -17,15 +17,20 @@ public class Recipe implements Parcelable{
     private String mImageUrl;
     private List<Ingredient> mIngredients;
     private List<RecipeStep> mSteps;
+    private boolean mIsFavorite;
+    private int mDbId;
 
     public Recipe(int id, String name, List<Ingredient> ingredients,
-                  List<RecipeStep> steps, int servings, String imageUrl){
+                  List<RecipeStep> steps, int servings, String imageUrl,
+                  boolean mIsFavorite, int dbId){
         this.mId = id;
         this.mName = name;
         this.mIngredients = ingredients;
         this.mServings = servings;
         this.mImageUrl = imageUrl;
         this.mSteps = steps;
+        this.mIsFavorite = mIsFavorite;
+        this.mDbId = dbId;
     }
 
     // Create a Recipe from a Parcel
@@ -36,6 +41,8 @@ public class Recipe implements Parcelable{
         mImageUrl = in.readString();
         mIngredients = in.createTypedArrayList(Ingredient.CREATOR);
         mSteps = in.createTypedArrayList(RecipeStep.CREATOR);
+        mIsFavorite = in.readByte() != 0;
+        mDbId = in.readInt();
     }
 
     public int getId() {
@@ -62,6 +69,18 @@ public class Recipe implements Parcelable{
         return mImageUrl;
     }
 
+    public void setIsFavorite(boolean fave){
+        this.mIsFavorite = fave;
+    }
+
+    public boolean getIsFavorite(){
+        return mIsFavorite;
+    }
+
+    public int getDbId() {
+        return this.mDbId;
+    }
+
     // Required override method for Parcelable
     @Override
     public int describeContents() {
@@ -77,6 +96,8 @@ public class Recipe implements Parcelable{
         dest.writeString(mImageUrl);
         dest.writeTypedList(mIngredients);
         dest.writeTypedList(mSteps);
+        dest.writeByte((byte) (mIsFavorite ? 1 : 0));
+        dest.writeInt(mDbId);
     }
 
     // Creator for Parcelable implementation

@@ -1,5 +1,6 @@
-package net.alexblass.bakingapp.data;
+package net.alexblass.bakingapp.utilities;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -53,7 +54,6 @@ public class RecipeQueryUtils {
 
                 for (int i = 1; cursor.moveToNext(); i++) {
                     recipeId = cursor.getInt(cursor.getColumnIndex(RecipeEntry._ID));
-                    //isFavorite = (cursor.getInt(cursor.getColumnIndex(RecipeEntry.COLUMN_IS_FAVORITED)) == 1);
 
                     recipes[i] = getRecipe(recipeId);
                 }
@@ -200,7 +200,7 @@ public class RecipeQueryUtils {
                 RecipeEntry.COLUMN_IS_FAVORITED
         };
 
-        String selection = RecipeStepEntry.COLUMN_RECIPE_ID + "=?";
+        String selection = RecipeEntry._ID + "=?";
 
         String[] selectionArgs = {Integer.toString(recipeId)};
 
@@ -217,25 +217,51 @@ public class RecipeQueryUtils {
         if (cursor != null && cursor.moveToFirst()) {
 
             String name, img_url;
-            int sourceId, servings;
+            int sourceId, servings, dbId;
+            boolean isFavorite;
 
+            dbId = cursor.getInt(cursor.getColumnIndex(RecipeEntry._ID));
             sourceId = cursor.getInt(cursor.getColumnIndex(RecipeEntry.COLUMN_RECIPE_SOURCE_ID));
             name = cursor.getString(cursor.getColumnIndex(RecipeEntry.COLUMN_NAME));
             servings = cursor.getInt(cursor.getColumnIndex(RecipeEntry.COLUMN_SERVINGS));
             img_url = cursor.getString(cursor.getColumnIndex(RecipeEntry.COLUMN_IMG_URL));
+            isFavorite = cursor.getInt(cursor.getColumnIndex(RecipeEntry.COLUMN_IS_FAVORITED)) == 1;
 
             List<Ingredient> ingredients = getIngredients(recipeId);
             List<RecipeStep> steps = getSteps(recipeId);
 
-
-
             recipe = new Recipe(
-                    sourceId, name, ingredients, steps, servings, img_url
+                    sourceId, name, ingredients, steps, servings, img_url, isFavorite, dbId
             );
 
             cursor.close();
         }
 
         return recipe;
+    }
+
+    // Update the database value for whether a recipe is favorited or not
+    public boolean updateFavorite(int recipeId, boolean favorite){
+
+        if (recipeId == -1){
+            return false;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(RecipeEntry.COLUMN_IS_FAVORITED, favorite);
+
+        String selection = RecipeEntry._ID + "=?";
+
+        String[] selectionArgs = {Integer.toString(recipeId)};
+
+        // Update the values
+        int rowsUpdated = mContext.getContentResolver().update(
+                RecipeEntry.CONTENT_URI,
+                values,
+                selection,
+                selectionArgs
+        );
+
+        return rowsUpdated > 0;
     }
 }

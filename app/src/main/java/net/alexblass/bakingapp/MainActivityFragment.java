@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import net.alexblass.bakingapp.data.IngredientsContract.IngredientEntry;
@@ -105,6 +106,8 @@ public class MainActivityFragment extends Fragment
 
         // If there is no connectivity, use our local SQLite database to show recipes
         if (isConnected) {
+            // TODO: When connected to the internet, update the database but load from our content
+            // provider anyway so that the data displayed shows the locally created recipes too
             loaderManager.initLoader(RECIPE_LOADER_ID, null, this);
         } else {
             loaderManager.initLoader(FAVORITE_RECIPE_LOADER_ID, null, this);

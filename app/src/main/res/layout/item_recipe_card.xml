@@ -22,7 +22,7 @@
             android:scaleType="centerCrop"
             android:visibility="gone"/>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/share_btn"
             style="@style/card_buttons"
             android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"/>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/favorite_btn"
             style="@style/card_buttons"
             android:layout_width="wrap_content"

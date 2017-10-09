@@ -175,7 +175,7 @@ public class RecipesProvider extends ContentProvider {
                         selectionArgs);
                 break;
             default:
-                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+                throw new IllegalArgumentException("Update is not supported for " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);

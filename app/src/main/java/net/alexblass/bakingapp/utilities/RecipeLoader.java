@@ -2,13 +2,8 @@ package net.alexblass.bakingapp.utilities;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.database.Cursor;
 
-import net.alexblass.bakingapp.data.RecipeQueryUtils;
 import net.alexblass.bakingapp.models.Recipe;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**

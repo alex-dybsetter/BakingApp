@@ -6,8 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -86,6 +88,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         .load(selectedRecipe.getImageUrl())
                         .into(holder.image);
             }
+
+            int imgId;
+            if (selectedRecipe.getIsFavorite()){
+                imgId = R.drawable.ic_favorite_white_24dp;
+            } else {
+                imgId = R.drawable.ic_favorite_border_white_24dp;
+            }
+
+            holder.favoriteBtn.setImageResource(imgId);
         }
     }
 
@@ -100,6 +111,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         private ImageView image;
         private TextView name;
         private TextView servings;
+        private ImageButton favoriteBtn;
 
         public ViewHolder(View itemView){
             super(itemView);
@@ -108,6 +120,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             image = (ImageView) itemView.findViewById(R.id.recipe_image);
             name = (TextView) itemView.findViewById(R.id.recipe_name_tv);
             servings = (TextView) itemView.findViewById(R.id.recipe_servings_tv);
+            favoriteBtn = (ImageButton) itemView.findViewById(R.id.favorite_btn);
+
+            favoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Recipe selectedRecipe = mAllRecipies[getAdapterPosition()];
+
+                // We are changing the existing value to the opposite
+                boolean isFavorite = !selectedRecipe.getIsFavorite();
+
+                selectedRecipe.setIsFavorite(isFavorite);
+                favoriteBtn.setImageResource(
+                        isFavorite ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
+
+                RecipeQueryUtils utils = new RecipeQueryUtils(mContext);
+                utils.updateFavorite(selectedRecipe.getDbId(), isFavorite);
+            }});
+
+            // TODO: Implement sharing button
         }
 
         @Override

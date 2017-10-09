@@ -10,7 +10,7 @@ import android.widget.RemoteViewsService;
 
 import net.alexblass.bakingapp.R;
 import net.alexblass.bakingapp.RecipeOverviewActivity;
-import net.alexblass.bakingapp.data.RecipeQueryUtils;
+import net.alexblass.bakingapp.utilities.RecipeQueryUtils;
 import net.alexblass.bakingapp.models.Recipe;
 
 import static net.alexblass.bakingapp.data.constants.Keys.PREFS_KEY;

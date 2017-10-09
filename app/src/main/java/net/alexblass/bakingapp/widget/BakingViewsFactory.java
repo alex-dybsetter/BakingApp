@@ -9,7 +9,7 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import net.alexblass.bakingapp.R;
-import net.alexblass.bakingapp.data.RecipeQueryUtils;
+import net.alexblass.bakingapp.utilities.RecipeQueryUtils;
 import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
 

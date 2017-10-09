@@ -18,6 +18,7 @@
 
     <style name="card_buttons">
         <item name="android:tint">@color/colorAccent</item>
+        <item name="android:background">@color/cardview_light_background</item>
         <item name="android:paddingLeft">@dimen/small_padding</item>
     </style>
 

@@ -179,7 +179,9 @@ public class QueryUtils {
                         recipeIngredients,
                         recipeSteps,
                         recipeServings,
-                        recipeimage);
+                        recipeimage,
+                        false,
+                        -1);
                 recipes[i] = newRecipe;
             }
         } catch (JSONException e){
