@@ -14,6 +14,7 @@
     <dimen name="recipe_title">24sp</dimen>
     <dimen name="detail_title">18sp</dimen>
     <dimen name="step_title">18sp</dimen>
+    <dimen name="add_btn_text">12sp</dimen>
 
     <dimen name="zero">0dp</dimen>
 

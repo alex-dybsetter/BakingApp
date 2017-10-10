@@ -34,6 +34,19 @@
     <string name="make_selection">Select</string>
     <string name="make_selection_prompt">Please select a recipe.</string>
 
+    <!--Strings for the share functionality-->
     <string name="share_subject">Baking Time: <xliff:g id="mins">%1$s</xliff:g> Recipe</string>
     <string name="share_attribution">Sent using Baking Time on Android</string>
+
+    <string name="add">Add New</string>
+    
+    <!--Fields for adding a Recipe-->
+    <string name="recipe_name">Name</string>
+    <string name="recipe_servings">Servings</string>
+    <string name="add_ingredient_qty">Qty</string>
+    <string name="add_ingredient_measurement">Meas.</string>
+    <string name="add_step_short_desc">Short Description</string>
+    <string name="add_step_long_desc">Detailed Instructions</string>
+    <string name="add_more_btn">Add(+)</string>
+    <string name="add_Recipe_btn">Add Recipe</string>
 </resources>
