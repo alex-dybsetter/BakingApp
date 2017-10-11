@@ -19,6 +19,7 @@
             android:layout_marginStart="@dimen/parent_margin"
             android:layout_marginTop="@dimen/parent_margin"
             android:hint="@string/recipe_name"
+            android:maxLines="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/new_servings"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,6 +32,8 @@
             android:layout_marginRight="@dimen/parent_margin"
             android:layout_marginTop="@dimen/parent_margin"
             android:hint="@string/recipe_servings"
+            android:maxLines="1"
+            android:maxLength="4"
             android:inputType="number"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -50,9 +53,9 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/new_name" />
 
-        <include android:id="@+id/new_ingredient1"
+        <include android:id="@+id/new_ingredient"
             layout="@layout/item_add_ingredient"
-            android:layout_width="@dimen/zero"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/parent_margin"
             android:layout_marginLeft="@dimen/parent_margin"
@@ -64,43 +67,26 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ingredients_section"/>
 
-        <include android:id="@+id/new_ingredient2"
-            layout="@layout/item_add_ingredient"
-            android:layout_width="@dimen/zero"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/parent_margin"
-            android:layout_marginLeft="@dimen/parent_margin"
-            android:layout_marginRight="@dimen/parent_margin"
-            android:layout_marginStart="@dimen/parent_margin"
-            android:layout_marginTop="@dimen/vertical_margin"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_ingredient1"/>
-
-        <include android:id="@+id/new_ingredient3"
-            layout="@layout/item_add_ingredient"
-            android:layout_width="@dimen/zero"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/parent_margin"
-            android:layout_marginLeft="@dimen/parent_margin"
-            android:layout_marginRight="@dimen/parent_margin"
-            android:layout_marginStart="@dimen/parent_margin"
-            android:layout_marginTop="@dimen/vertical_margin"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_ingredient2"/>
-
         <Button
-            android:id="@+id/addMoreIngredientsBtn"
+            android:id="@+id/add_ingredient_btn"
             style="@style/add_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_more_btn"
+            android:text="@string/add_btn"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_ingredient3">
-        </Button>
+            app:layout_constraintTop_toBottomOf="@+id/new_ingredient"/>
+
+        <LinearLayout
+            android:id="@+id/ingredient_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/parent_margin"
+            android:layout_marginRight="@dimen/parent_margin"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_ingredient_btn">
+        </LinearLayout>
 
         <TextView
             android:id="@+id/steps_section"
@@ -115,9 +101,9 @@
             android:text="@string/steps_title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addMoreIngredientsBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/ingredient_container" />
 
-        <include android:id="@+id/new_step1"
+        <include android:id="@+id/new_step"
             layout="@layout/item_add_step"
             android:layout_width="@dimen/zero"
             android:layout_height="wrap_content"
@@ -131,43 +117,26 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/steps_section"/>
 
-        <include android:id="@+id/new_step2"
-            layout="@layout/item_add_step"
-            android:layout_width="@dimen/zero"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/parent_margin"
-            android:layout_marginLeft="@dimen/parent_margin"
-            android:layout_marginRight="@dimen/parent_margin"
-            android:layout_marginStart="@dimen/parent_margin"
-            android:layout_marginTop="@dimen/vertical_margin"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_step1"/>
-
-        <include android:id="@+id/new_step3"
-            layout="@layout/item_add_step"
-            android:layout_width="@dimen/zero"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/parent_margin"
-            android:layout_marginLeft="@dimen/parent_margin"
-            android:layout_marginRight="@dimen/parent_margin"
-            android:layout_marginStart="@dimen/parent_margin"
-            android:layout_marginTop="@dimen/vertical_margin"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_step2"/>
-
         <Button
-            android:id="@+id/addMoreStepsBtn"
+            android:id="@+id/add_steps_btn"
             style="@style/add_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_more_btn"
+            android:text="@string/add_btn"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_step3">
-        </Button>
+            app:layout_constraintTop_toBottomOf="@+id/new_step"/>
+
+        <LinearLayout
+            android:id="@+id/step_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/parent_margin"
+            android:layout_marginRight="@dimen/parent_margin"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_steps_btn">
+        </LinearLayout>
 
         <Button
             android:id="@+id/add_btn"
@@ -179,7 +148,7 @@
             android:layout_marginTop="@dimen/vertical_margin"
             android:text="@string/add_Recipe_btn"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addMoreStepsBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/step_container" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

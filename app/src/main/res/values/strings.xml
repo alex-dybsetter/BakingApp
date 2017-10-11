@@ -47,6 +47,7 @@
     <string name="add_ingredient_measurement">Meas.</string>
     <string name="add_step_short_desc">Short Description</string>
     <string name="add_step_long_desc">Detailed Instructions</string>
-    <string name="add_more_btn">Add(+)</string>
+    <string name="add_btn">Add</string>
+    <string name="delete_btn">x</string>
     <string name="add_Recipe_btn">Add Recipe</string>
 </resources>

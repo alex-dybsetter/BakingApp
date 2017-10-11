@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/vertical_margin"
-        android:hint="@string/add_step_short_desc"/>
+        android:hint="@string/add_step_short_desc"
+        android:maxLines="1"/>
 
     <EditText
         android:id="@+id/add_step_detail_desc"
@@ -18,6 +19,7 @@
         android:layout_weight="3"
         android:gravity="start"
         android:inputType="textMultiLine"
-        android:hint="@string/add_step_long_desc"/>
+        android:hint="@string/add_step_long_desc"
+        android:maxLines="1"/>
 
 </LinearLayout>
