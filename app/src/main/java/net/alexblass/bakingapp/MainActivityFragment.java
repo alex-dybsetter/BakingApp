@@ -42,11 +42,6 @@ public class MainActivityFragment extends Fragment
 
     // The ID for the recipe loader
     private static final int RECIPE_LOADER_ID = 0;
-    // The ID for the recipe favorites loader
-    private static final int FAVORITE_RECIPE_LOADER_ID = 1;
-
-    // The query URL
-    private String mUrl;
 
     // Displays a message when there is no Internet or when there are no Recipes found
     private TextView mErrorMessageTextView;
@@ -76,8 +71,6 @@ public class MainActivityFragment extends Fragment
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mUrl = getActivity().getResources().getString(R.string.query_url);
-
         // Find the RecyclerView and set our adapter to it so the recipes
         // display in a vertical linear layout format.
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recipes_rv);
@@ -97,21 +90,7 @@ public class MainActivityFragment extends Fragment
         mErrorMessageTextView = (TextView) rootView.findViewById(R.id.error_message_tv);
 
         LoaderManager loaderManager = getLoaderManager();
-
-        ConnectivityManager cm = (ConnectivityManager) getActivity()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
-
-        // If there is no connectivity, use our local SQLite database to show recipes
-        if (isConnected) {
-            // TODO: When connected to the internet, update the database but load from our content
-            // provider anyway so that the data displayed shows the locally created recipes too
-            loaderManager.initLoader(RECIPE_LOADER_ID, null, this);
-        } else {
-            loaderManager.initLoader(FAVORITE_RECIPE_LOADER_ID, null, this);
-        }
+        loaderManager.initLoader(RECIPE_LOADER_ID, null, this);
         showRecyclerView();
 
         return rootView;
@@ -222,19 +201,7 @@ public class MainActivityFragment extends Fragment
         mErrorMessage = getString(R.string.no_results);
         switch(id) {
             case RECIPE_LOADER_ID:
-                Uri baseUri = Uri.parse(mUrl);
-                Uri.Builder uriBuilder = baseUri.buildUpon();
-                recipeLoader = new RecipeLoader(getActivity(), uriBuilder.toString());
-                return recipeLoader;
-            case FAVORITE_RECIPE_LOADER_ID:
-                // Since we're pulling our data from the database, we do not need a URL
-                recipeLoader = new RecipeLoader(getActivity(), null);
-                // If there are no favorites, show an error message
-                if(recipeLoader.loadInBackground() == null){
-                    mLoadingIndicator.setVisibility(View.GONE);
-                    mErrorMessage = getString(R.string.no_results);
-                    showErrorMessage();
-                }
+                recipeLoader = new RecipeLoader(getActivity());
                 return recipeLoader;
             default:
                 return null;
@@ -244,6 +211,7 @@ public class MainActivityFragment extends Fragment
     // When the Loader finishes loading, add the list of Recipes to the Adapter data set
     @Override
     public void onLoadFinished(Loader<Recipe[]> loader, Recipe[] newRecipes) {
+
         mLoadingIndicator.setVisibility(View.GONE);
         mErrorMessageTextView.setText(mErrorMessage);
         mAdapter.setAllRecipies(new Recipe[0]);
@@ -255,6 +223,7 @@ public class MainActivityFragment extends Fragment
                 updateTable(r, false);
             }
         } else {
+            // If there are no recipes, show an error message
             showErrorMessage();
         }
 
