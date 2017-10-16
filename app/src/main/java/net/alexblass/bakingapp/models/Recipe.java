@@ -11,7 +11,10 @@ import java.util.List;
  */
 
 public class Recipe implements Parcelable{
+    // The ID field is only for the ID recipes already have from the API.
+    // This field will be -1 for any recipe not pulled from the API.
     private int mId;
+
     private String mName;
     private int mServings;
     private String mImageUrl;

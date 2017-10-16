@@ -47,8 +47,7 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
         int recipeId = mPrefs.getInt("widget" + mAppWidgetId, -1);
 
-        RecipeQueryUtils utils = new RecipeQueryUtils(mContext);
-        mSelectedRecipe = utils.getRecipe(recipeId);
+        mSelectedRecipe = RecipeQueryUtils.getRecipe(mContext, recipeId);
         mIngredients = mSelectedRecipe.getIngredients();
     }
 

@@ -36,6 +36,10 @@ public class RecipeStep implements Parcelable {
         return mId;
     }
 
+    public void setId(int id){
+        this.mId = id;
+    }
+
     public String getShortDescription() {
         return mShortDescription;
     }

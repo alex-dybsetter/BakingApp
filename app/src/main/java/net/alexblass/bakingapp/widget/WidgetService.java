@@ -28,8 +28,7 @@ public class WidgetService extends RemoteViewsService {
         // Get the saved Recipe from the ConfigurationActivity
         mPrefs = getApplicationContext().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         int recipeId = mPrefs.getInt("widget" + mAppWidgetId, -1);
-        RecipeQueryUtils utils = new RecipeQueryUtils(getApplicationContext());
-        Recipe recipe = utils.getRecipe(recipeId);
+        Recipe recipe = RecipeQueryUtils.getRecipe(getApplicationContext(), recipeId);
 
         // Set the Recipe title in the widget
         RemoteViews widget = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget);

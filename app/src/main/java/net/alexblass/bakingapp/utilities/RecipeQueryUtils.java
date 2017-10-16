@@ -1,8 +1,11 @@
 package net.alexblass.bakingapp.utilities;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
 
 import net.alexblass.bakingapp.data.IngredientsContract.IngredientEntry;
 import net.alexblass.bakingapp.data.RecipesContract.RecipeEntry;
@@ -20,13 +23,56 @@ import java.util.List;
 
 public class RecipeQueryUtils {
 
-    private Context mContext;
+    // A private empty constructor so no RecipeQueryUtils object is created
+    private RecipeQueryUtils(){}
 
-    // A constructor to get the context so we can access the provider
-    public RecipeQueryUtils(Context context){ this.mContext = context; }
+    // Updates the table so that we have the most recent recipe data without adding duplicates
+    public static void updateTable(Context context, Recipe[] recipes){
+        for (Recipe recipe: recipes) {
+            // Get the Recipe by its source id since any user-added recipes will not have one
+            String sourceId = Integer.toString(recipe.getId());
+
+            String[] projection = {
+                    RecipeEntry.COLUMN_RECIPE_SOURCE_ID
+            };
+
+            String selection = RecipeEntry.COLUMN_RECIPE_SOURCE_ID + "=?";
+
+            String[] selectionArgs = {sourceId};
+
+            Cursor cursor = context.getContentResolver().query(
+                    RecipeEntry.CONTENT_URI,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null
+            );
+
+            // Only add the recipe to the database if it does not already exist
+            if (cursor != null) {
+                long recipeId = -1;
+                if (!cursor.moveToFirst()) {
+
+                    recipeId = addRecipe(context, recipe, false);
+
+                    // Add the Recipe Ingredients
+                    for (Ingredient i : recipe.getIngredients()) {
+                        addIngredient(context, i, recipeId);
+                    }
+
+                    // Add the RecipeSteps
+                    for (RecipeStep step : recipe.getSteps()) {
+                        addStep(context, step, recipeId);
+                    }
+                }
+                cursor.close();
+            }
+        }
+    }
 
     // Get all the Recipes in an array
-    public Recipe[] getRecipes(){
+    public static Recipe[] getRecipes(Context context){
         Recipe[] recipes = null;
 
         String[] projection = {
@@ -34,7 +80,7 @@ public class RecipeQueryUtils {
         };
 
         // Check if the recipe exists in the database
-        Cursor cursor = mContext.getContentResolver().query(
+        Cursor cursor = context.getContentResolver().query(
                 RecipeEntry.CONTENT_URI,
                 projection,
                 null,
@@ -50,12 +96,12 @@ public class RecipeQueryUtils {
                 int recipeId;
 
                 recipeId = cursor.getInt(cursor.getColumnIndex(RecipeEntry._ID));
-                recipes[0] = getRecipe(recipeId);
+                recipes[0] = getRecipe(context, recipeId);
 
                 for (int i = 1; cursor.moveToNext(); i++) {
                     recipeId = cursor.getInt(cursor.getColumnIndex(RecipeEntry._ID));
 
-                    recipes[i] = getRecipe(recipeId);
+                    recipes[i] = getRecipe(context, recipeId);
                 }
             }
             cursor.close();
@@ -64,7 +110,7 @@ public class RecipeQueryUtils {
     }
 
     // Get the ArrayList of Ingredients for a given Recipe
-    private ArrayList<Ingredient> getIngredients(int recipeId){
+    private static ArrayList<Ingredient> getIngredients(Context context, int recipeId){
 
         ArrayList<Ingredient> ingredientsList = new ArrayList<>();
 
@@ -82,7 +128,7 @@ public class RecipeQueryUtils {
         String[] selectionArgs = {Integer.toString(recipeId)};
 
         // Check if the Ingredient exists in the database
-        Cursor ingredientCursor = mContext.getContentResolver().query(
+        Cursor ingredientCursor = context.getContentResolver().query(
                 IngredientEntry.CONTENT_URI,
                 ingredientProjection,
                 selection,
@@ -123,7 +169,7 @@ public class RecipeQueryUtils {
     }
 
     // Get the ArrayList of RecipeSteps for a given Recipe
-    private ArrayList<RecipeStep> getSteps(int recipeId){
+    private static ArrayList<RecipeStep> getSteps(Context context, int recipeId){
 
         ArrayList<RecipeStep> recipeStepsList = new ArrayList<>();
 
@@ -143,7 +189,7 @@ public class RecipeQueryUtils {
         String[] selectionArgs = {Integer.toString(recipeId)};
 
         // Check if the Ingredient exists in the database
-        Cursor stepCursor = mContext.getContentResolver().query(
+        Cursor stepCursor = context.getContentResolver().query(
                 RecipeStepEntry.CONTENT_URI,
                 stepProjection,
                 selection,
@@ -188,7 +234,7 @@ public class RecipeQueryUtils {
     }
 
     // Get a single Recipe
-    public Recipe getRecipe(int recipeId){
+    public static Recipe getRecipe(Context context, int recipeId){
         Recipe recipe = null;
 
         String[] projection = {
@@ -205,7 +251,7 @@ public class RecipeQueryUtils {
         String[] selectionArgs = {Integer.toString(recipeId)};
 
         // Check if the recipe exists in the database
-        Cursor cursor = mContext.getContentResolver().query(
+        Cursor cursor = context.getContentResolver().query(
                 RecipeEntry.CONTENT_URI,
                 projection,
                 selection,
@@ -227,8 +273,8 @@ public class RecipeQueryUtils {
             img_url = cursor.getString(cursor.getColumnIndex(RecipeEntry.COLUMN_IMG_URL));
             isFavorite = cursor.getInt(cursor.getColumnIndex(RecipeEntry.COLUMN_IS_FAVORITED)) == 1;
 
-            List<Ingredient> ingredients = getIngredients(recipeId);
-            List<RecipeStep> steps = getSteps(recipeId);
+            List<Ingredient> ingredients = getIngredients(context, recipeId);
+            List<RecipeStep> steps = getSteps(context, recipeId);
 
             recipe = new Recipe(
                     sourceId, name, ingredients, steps, servings, img_url, isFavorite, dbId
@@ -240,8 +286,52 @@ public class RecipeQueryUtils {
         return recipe;
     }
 
+    // Add a recipe to the database
+    public static long addRecipe(Context context, Recipe recipe, boolean isFave){
+        ContentValues values = new ContentValues();
+        values.put(RecipeEntry.COLUMN_RECIPE_SOURCE_ID, recipe.getId());
+        values.put(RecipeEntry.COLUMN_NAME, recipe.getName());
+        values.put(RecipeEntry.COLUMN_SERVINGS, recipe.getServings());
+        values.put(RecipeEntry.COLUMN_IMG_URL, recipe.getImageUrl());
+        values.put(RecipeEntry.COLUMN_IS_FAVORITED, isFave);
+
+        Uri newUri = context.getContentResolver().insert(RecipeEntry.CONTENT_URI, values);
+
+        // Return the Recipe ID
+        return ContentUris.parseId(newUri);
+    }
+
+    // Add a ingredient to the database
+    public static long addIngredient(Context context, Ingredient ingredient, long recipeId){
+        ContentValues values = new ContentValues();
+        values.put(IngredientEntry.COLUMN_RECIPE_ID, recipeId);
+        values.put(IngredientEntry.COLUMN_QUANTITY, ingredient.getQuantity());
+        values.put(IngredientEntry.COLUMN_MEASUREMENT, ingredient.getMeasurement());
+        values.put(IngredientEntry.COLUMN_NAME, ingredient.getIngredientName());
+
+        Uri newUri = context.getContentResolver().insert(IngredientEntry.CONTENT_URI, values);
+
+        // Return the Ingredient ID
+        return ContentUris.parseId(newUri);
+    }
+
+    // Add a ingredient to the database
+    public static long addStep(Context context, RecipeStep step, long recipeId){
+        ContentValues values = new ContentValues();
+        values.put(RecipeStepEntry.COLUMN_RECIPE_ID, recipeId);
+        values.put(RecipeStepEntry.COLUMN_RECIPE_STEP_ID, step.getId());
+        values.put(RecipeStepEntry.COLUMN_SHORT_DESCRIPTION, step.getShortDescription());
+        values.put(RecipeStepEntry.COLUMN_DESCRIPTION, step.getDescription());
+        values.put(RecipeStepEntry.COLUMN_STEP_IMG_URL, step.getImageUrl());
+        values.put(RecipeStepEntry.COLUMN_STEP_VIDEO_URL, step.getVideoUrl());
+
+        Uri newUri = context.getContentResolver().insert(RecipeStepEntry.CONTENT_URI, values);
+        // Return the Step ID
+        return ContentUris.parseId(newUri);
+    }
+
     // Update the database value for whether a recipe is favorited or not
-    public boolean updateFavorite(int recipeId, boolean favorite){
+    public static boolean updateFavorite(Context context, int recipeId, boolean favorite){
 
         if (recipeId == -1){
             return false;
@@ -255,7 +345,7 @@ public class RecipeQueryUtils {
         String[] selectionArgs = {Integer.toString(recipeId)};
 
         // Update the values
-        int rowsUpdated = mContext.getContentResolver().update(
+        int rowsUpdated = context.getContentResolver().update(
                 RecipeEntry.CONTENT_URI,
                 values,
                 selection,

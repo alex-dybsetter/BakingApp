@@ -140,8 +140,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 favoriteBtn.setImageResource(
                         isFavorite ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
 
-                RecipeQueryUtils utils = new RecipeQueryUtils(mContext);
-                utils.updateFavorite(selectedRecipe.getDbId(), isFavorite);
+                RecipeQueryUtils.updateFavorite(mContext, selectedRecipe.getDbId(), isFavorite);
             }});
 
             shareBtn.setOnClickListener(new View.OnClickListener() {

@@ -10,6 +10,8 @@ import android.net.Uri;
 import net.alexblass.bakingapp.R;
 import net.alexblass.bakingapp.models.Recipe;
 
+import static net.alexblass.bakingapp.utilities.QueryUtils.fetchRecipes;
+
 
 /**
  * Loads a list of Recipes using the AsyncTask
@@ -19,10 +21,12 @@ import net.alexblass.bakingapp.models.Recipe;
 public class RecipeLoader extends AsyncTaskLoader<Recipe[]> {
     // The query URL
     private String mUrl = null;
+    private Context mContext;
 
     // Constructs a new RecipeLoader
     public RecipeLoader(Context context){
         super(context);
+        mContext = context;
 
         // If we are connected to the internet, then we can add the API URL
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -46,10 +50,10 @@ public class RecipeLoader extends AsyncTaskLoader<Recipe[]> {
         if (mUrl != null) {
             // When connected to the internet, update the database but load from our content
             // provider anyway so that the data displayed shows the locally created recipes too
-            QueryUtils.fetchRecipes(mUrl);
+            Recipe recipes[] = QueryUtils.fetchRecipes(mUrl);
+            RecipeQueryUtils.updateTable(mContext, recipes);
         }
 
-        RecipeQueryUtils utils = new RecipeQueryUtils(getContext());
-        return utils.getRecipes();
+        return RecipeQueryUtils.getRecipes(getContext());
     }
 }

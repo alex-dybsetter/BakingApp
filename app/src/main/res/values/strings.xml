@@ -41,8 +41,9 @@
     <string name="add">Add New</string>
     
     <!--Fields for adding a Recipe-->
-    <string name="recipe_name">Name</string>
+    <string name="recipe_name">Recipe Name</string>
     <string name="recipe_servings">Servings</string>
+    <string name="ingredient_name">Name</string>
     <string name="add_ingredient_qty">Qty</string>
     <string name="add_ingredient_measurement">Meas.</string>
     <string name="add_step_short_desc">Short Description</string>
@@ -50,4 +51,14 @@
     <string name="add_btn">Add</string>
     <string name="delete_btn">x</string>
     <string name="add_Recipe_btn">Add Recipe</string>
+
+    <string name="incomplete_data_title">Missing Field</string>
+    <!--Prompt for when a user tries to save a new recipe with incomplete data-->
+    <string name="incomplete_recipe_prompt"><xliff:g id="mins">%1$s</xliff:g> is a required field.\nPlease add a value before submitting your recipe.</string>
+    <!--Prompt for when a user tries to save an incomplete ingredient-->
+    <string name="incomplete_ingredient_prompt">Please complete all the ingredient fields.</string>
+    <!--Prompt for when a user tries to save an incomplete step-->
+    <string name="incomplete_step_prompt">Please complete all the recipe step fields.</string>
+    <string name="saved">Recipe saved!</string>
+
 </resources>

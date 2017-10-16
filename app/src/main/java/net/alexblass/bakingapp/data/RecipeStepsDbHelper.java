@@ -14,7 +14,7 @@ public class RecipeStepsDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "recipesteps.db";
 
     // The version of the database schema
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 1;
 
     public RecipeStepsDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
