@@ -301,6 +301,23 @@ public class RecipeQueryUtils {
         return ContentUris.parseId(newUri);
     }
 
+    // Delete a recipe from the database
+    public static int delete(Context context, int recipeId){
+        if (recipeId == -1){
+            return -1;
+        }
+
+        String selection = RecipeEntry._ID + "=?";
+
+        String[] selectionArgs = {Integer.toString(recipeId)};
+
+        return context.getContentResolver().delete(
+                Uri.parse(RecipeEntry.CONTENT_URI + "/" + recipeId),
+                selection,
+                selectionArgs
+        );
+    }
+
     // Add a ingredient to the database
     public static long addIngredient(Context context, Ingredient ingredient, long recipeId){
         ContentValues values = new ContentValues();

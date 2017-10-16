@@ -1,21 +1,28 @@
 package net.alexblass.bakingapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.models.RecipeStep;
 import net.alexblass.bakingapp.utilities.ExpandableListAdapter;
+import net.alexblass.bakingapp.utilities.RecipeQueryUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.R.attr.id;
 import static android.support.v4.app.NavUtils.navigateUpFromSameTask;
 import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
 import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_STEP_KEY;
@@ -137,7 +144,53 @@ public class RecipeOverviewActivity<T> extends AppCompatActivity {
         }
     }
 
-    // Override method to determine action on Up button pressed
+    private void delete(){
+        if (mSelectedRecipe.getId() != -1){
+            Toast.makeText(getApplicationContext(), getString(R.string.cannot_delete), Toast.LENGTH_SHORT).show();
+        }else {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            RecipeQueryUtils.delete(getApplicationContext(), mSelectedRecipe.getDbId());
+                            Toast.makeText(getApplicationContext(), getString(R.string.deleted_confirmation), Toast.LENGTH_SHORT).show();
+                            finish();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            // Do nothing if the user clicks no
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(getString(R.string.delete))
+                    .setMessage(getString(R.string.delete_prompt))
+                    .setPositiveButton(getString(R.string.yes), dialogClickListener)
+                    .setNegativeButton(getString(R.string.no), dialogClickListener);
+
+            dialog.create().show();
+        }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem checkable = menu.findItem(R.id.action_favorite);
+        checkable.setChecked(mSelectedRecipe.getIsFavorite());
+        return true;
+    }
+
+    // Inflate our options menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.recipe_overview, menu);
+        return true;
+    }
+
+    // Determine what action to take based on the menu item selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -155,7 +208,14 @@ public class RecipeOverviewActivity<T> extends AppCompatActivity {
                     navigateUpFromSameTask(this);
                 }
                 return true;
-
+            case R.id.action_delete_entry:
+                delete();
+                return true;
+            case R.id.action_favorite:
+                RecipeQueryUtils.updateFavorite(this,
+                        mSelectedRecipe.getDbId(), !mSelectedRecipe.getIsFavorite());
+                item.setChecked(!mSelectedRecipe.getIsFavorite());
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
