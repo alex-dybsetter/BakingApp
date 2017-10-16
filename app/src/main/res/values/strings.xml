@@ -61,4 +61,11 @@
     <string name="incomplete_step_prompt">Please complete all the recipe step fields.</string>
     <string name="saved">Recipe saved!</string>
 
+    <string name="clear">Clear All</string>
+    <string name="clear_prompt">Are you sure you want to clear all fields?</string>
+    <string name="cancel">Cancel</string>
+    <string name="cancel_prompt">Are you sure you want to discard this recipe?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>

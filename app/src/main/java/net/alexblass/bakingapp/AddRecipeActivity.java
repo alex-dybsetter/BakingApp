@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,9 +35,6 @@ import butterknife.OnClick;
 
 public class AddRecipeActivity extends AppCompatActivity {
 
-    // TODO: clear all fields
-    // TODO: cancel add and save recipe prompt
-
     // The views to get information from the user
     @BindView(R.id.new_name) EditText mRecipeName;
     @BindView(R.id.new_servings) EditText mServings;
@@ -57,7 +57,6 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     private List<RecipeStep> mStepsList;
 
-    private int mDbId;
     // Assign a dummy value to the field for the API ID since these recipes are not from the API
     private final int mId = -1;
 
@@ -73,8 +72,8 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     // Verify the fields have data and then create our recipe with the data and save it to the DB
     @OnClick(R.id.add_btn)
-    public void saveRecipe(){
-        if (TextUtils.isEmpty(mRecipeName.getText().toString().trim())){
+    public void saveRecipe() {
+        if (TextUtils.isEmpty(mRecipeName.getText().toString().trim())) {
             String prompt = getString(R.string.incomplete_recipe_prompt, mRecipeName.getHint().toString());
             showErrorDialog(prompt);
             return;
@@ -82,11 +81,11 @@ public class AddRecipeActivity extends AppCompatActivity {
             mRecipeNameString = mRecipeName.getText().toString().trim();
         }
 
-        if (TextUtils.isEmpty(mServings.getText().toString().trim())){
+        if (TextUtils.isEmpty(mServings.getText().toString().trim())) {
             String prompt = getString(R.string.incomplete_recipe_prompt, mServings.getHint().toString());
             showErrorDialog(prompt);
             return;
-        }else {
+        } else {
             mServingsInt = Integer.parseInt(mServings.getText().toString().trim());
         }
 
@@ -139,7 +138,7 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     // Add another ingredient
     @OnClick(R.id.add_ingredient_btn)
-    public void addIngredient(){
+    public void addIngredient() {
         LayoutInflater layoutInflater =
                 (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View addView = layoutInflater.inflate(R.layout.item_added_ingredient, null);
@@ -186,7 +185,7 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     // Add another recipe step
     @OnClick(R.id.add_steps_btn)
-    public void addStep(){
+    public void addStep() {
         LayoutInflater layoutInflater =
                 (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View addView = layoutInflater.inflate(R.layout.item_added_step, null);
@@ -218,7 +217,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mStepsList.remove(mStepContainer.indexOfChild(addView));
-                    for (int i = 0; i < mStepsList.size(); i++){
+                    for (int i = 0; i < mStepsList.size(); i++) {
                         mStepsList.get(i).setId(i);
                     }
                     ((LinearLayout) addView.getParent()).removeView(addView);
@@ -226,12 +225,12 @@ public class AddRecipeActivity extends AppCompatActivity {
             });
 
             mStepContainer.addView(addView);
-        }else {
+        } else {
             showErrorDialog(getString(R.string.incomplete_step_prompt));
         }
     }
 
-    private void showErrorDialog(String prompt){
+    private void showErrorDialog(String prompt) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(getString(R.string.incomplete_data_title))
                 .setMessage(prompt);
@@ -244,5 +243,94 @@ public class AddRecipeActivity extends AppCompatActivity {
         });
 
         dialog.create().show();
+    }
+
+    private void cancel(){
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        finish();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        // Do nothing if the user clicks no
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(getString(R.string.cancel))
+                .setMessage(getString(R.string.cancel_prompt))
+                .setPositiveButton(getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.no), dialogClickListener);
+
+        dialog.create().show();
+    }
+
+    private void clear(){
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        mRecipeName.setText("");
+                        mServings.setText("");
+                        mIngredientsList = new ArrayList<>();
+                        mStepsList = new ArrayList<>();
+                        mIngredientName.setText("");
+                        mIngredientQty.setText("");
+                        mIngredientMeas.setText("");
+                        mStepShortDesc.setText("");
+                        mStepDetailDesc.setText("");
+                        mIngredientContainer.removeAllViews();
+                        mStepContainer.removeAllViews();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        // Do nothing if the user clicks no
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(getString(R.string.clear))
+                .setMessage(getString(R.string.clear_prompt))
+                .setPositiveButton(getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.no), dialogClickListener);
+
+        dialog.create().show();
+    }
+
+    // Inflate our options menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add_recipe, menu);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancel();
+    }
+
+    // Determine what action to take based on the menu item selected
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.action_cancel || id == android.R.id.home) {
+            cancel();
+            return true;
+        }
+        if (id == R.id.action_clear) {
+            clear();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
