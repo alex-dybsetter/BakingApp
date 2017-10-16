@@ -47,6 +47,9 @@ import com.squareup.picasso.Picasso;
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.models.RecipeStep;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
 import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_STEP_KEY;
 
@@ -63,12 +66,15 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     private Recipe mSelectedRecipe;
 
     // The views in the StepDetail layout
-    private TextView mTitleTv, mDescriptionTv;
-    private ImageView mThumbnailImageView;
+    @BindView(R.id.step_description_title_tv) TextView mTitleTv;
+    @BindView(R.id.step_description_tv) TextView mDescriptionTv;
+    @BindView(R.id.step_thumbnail_imageview) ImageView mThumbnailImageView;
+    @BindView(R.id.step_video_exoplayer) SimpleExoPlayerView mPlayerView;
+    @BindView(R.id.loading_indicator_step_detail) ProgressBar mLoadingIndicator;
+    @BindView(R.id.prev_step_btn) Button mPrevBtn;
+    @BindView(R.id.next_step_btn) Button mNextBtn;
+
     private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
-    private ProgressBar mLoadingIndicator;
-    private Button mPrevBtn, mNextBtn;
 
     // Empty constructor
     public RecipeStepDetailFragment() {
@@ -77,6 +83,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
+        ButterKnife.bind(this, rootView);
 
         // Clear any old views to avoid overlaying Fragment layouts
         if (container != null) {
@@ -89,16 +96,6 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             // If there's a valid RecipeStep, get the data from the RecipeStep and display it
             if (bundle.getParcelable(RECIPE_STEP_KEY) != null) {
                 mSelectedStep = bundle.getParcelable(RECIPE_STEP_KEY);
-
-                mThumbnailImageView = (ImageView) rootView.findViewById(R.id.step_thumbnail_imageview);
-
-                mTitleTv = (TextView) rootView.findViewById(R.id.step_description_title_tv);
-                mDescriptionTv = (TextView) rootView.findViewById(R.id.step_description_tv);
-                mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.step_video_exoplayer);
-                mLoadingIndicator = (ProgressBar) rootView.findViewById(R.id.loading_indicator_step_detail);
-
-                mPrevBtn = (Button) rootView.findViewById(R.id.prev_step_btn);
-                mNextBtn = (Button) rootView.findViewById(R.id.next_step_btn);
 
                 BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                 TrackSelection.Factory videoTrackSelectionFactory =

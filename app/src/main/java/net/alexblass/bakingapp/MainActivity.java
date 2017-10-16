@@ -11,7 +11,6 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO: Verify localization requirements
     // TODO: Verify accessibility requirements
-    // TODO: Add butterknife
     // TODO: Use esspresso tests
     // TODO: On video full screen swipe, show app bars
     // TODO: Enable video full screen and shrink screen buttons

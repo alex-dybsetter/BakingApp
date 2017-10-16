@@ -16,6 +16,9 @@ import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.utilities.RecipeAdapter;
 import net.alexblass.bakingapp.utilities.RecipeLoader;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
 
 /**
@@ -31,15 +34,15 @@ public class MainActivityFragment extends Fragment
     private static final int RECIPE_LOADER_ID = 0;
 
     // Displays a message when there is no Internet or when there are no Recipes found
-    private TextView mErrorMessageTextView;
+    @BindView(R.id.error_message_tv) TextView mErrorMessageTextView;
     // The error message to display
     private String mErrorMessage;
 
     // Loading indicator for a responsive app experience
-    private View mLoadingIndicator;
+    @BindView(R.id.loading_indicator) View mLoadingIndicator;
 
     // A RecyclerView to display all the Recipe cards
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.recipes_rv) RecyclerView mRecyclerView;
     // The LinearLayoutManager to display recipes in a list
     private LinearLayoutManager mLayoutManager;
 
@@ -57,10 +60,10 @@ public class MainActivityFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.bind(this, rootView);
 
         // Find the RecyclerView and set our adapter to it so the recipes
         // display in a vertical linear layout format.
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recipes_rv);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -71,10 +74,7 @@ public class MainActivityFragment extends Fragment
         mRecyclerView.setAdapter(mAdapter);
 
         // Set the LoadingIndicator to visible as the data loads
-        mLoadingIndicator = rootView.findViewById(R.id.loading_indicator);
         mLoadingIndicator.setVisibility(View.VISIBLE);
-
-        mErrorMessageTextView = (TextView) rootView.findViewById(R.id.error_message_tv);
 
         LoaderManager loaderManager = getLoaderManager();
         loaderManager.initLoader(RECIPE_LOADER_ID, null, this);

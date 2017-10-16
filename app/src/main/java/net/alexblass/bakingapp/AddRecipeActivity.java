@@ -24,6 +24,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * An activity to add new user-entered Recipes to the database.
@@ -67,29 +68,12 @@ public class AddRecipeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mIngredientsList = new ArrayList<>();
-        mAddIngredientBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addIngredient();
-            }});
-
         mStepsList = new ArrayList<>();
-        mAddStepBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addStep();
-            }});
-
-        mAddRecipeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveRecipe();
-            }
-        });
     }
 
     // Verify the fields have data and then create our recipe with the data and save it to the DB
-    private void saveRecipe(){
+    @OnClick(R.id.add_btn)
+    public void saveRecipe(){
         if (TextUtils.isEmpty(mRecipeName.getText().toString().trim())){
             String prompt = getString(R.string.incomplete_recipe_prompt, mRecipeName.getHint().toString());
             showErrorDialog(prompt);
@@ -154,7 +138,8 @@ public class AddRecipeActivity extends AppCompatActivity {
     }
 
     // Add another ingredient
-    private void addIngredient(){
+    @OnClick(R.id.add_ingredient_btn)
+    public void addIngredient(){
         LayoutInflater layoutInflater =
                 (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View addView = layoutInflater.inflate(R.layout.item_added_ingredient, null);
@@ -200,7 +185,8 @@ public class AddRecipeActivity extends AppCompatActivity {
     }
 
     // Add another recipe step
-    private void addStep(){
+    @OnClick(R.id.add_steps_btn)
+    public void addStep(){
         LayoutInflater layoutInflater =
                 (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View addView = layoutInflater.inflate(R.layout.item_added_step, null);

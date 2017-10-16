@@ -19,6 +19,9 @@ import net.alexblass.bakingapp.models.Ingredient;
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.models.RecipeStep;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * An Adapter to display the Recipes in MainActivityFragment in a CardView list.
  */
@@ -111,22 +114,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     // Stores and recycles views to improve app performance and smoother scrolling
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private ImageView image;
-        private TextView name;
-        private TextView servings;
-        private ImageButton favoriteBtn;
-        private ImageButton shareBtn;
+        @BindView(R.id.recipe_image) ImageView image;
+        @BindView(R.id.recipe_name_tv) TextView name;
+        @BindView(R.id.recipe_servings_tv) TextView servings;
+        @BindView(R.id.favorite_btn) ImageButton favoriteBtn;
+        @BindView(R.id.share_btn) ImageButton shareBtn;
         private Recipe selectedRecipe;
 
         public ViewHolder(View itemView){
             super(itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
-
-            image = (ImageView) itemView.findViewById(R.id.recipe_image);
-            name = (TextView) itemView.findViewById(R.id.recipe_name_tv);
-            servings = (TextView) itemView.findViewById(R.id.recipe_servings_tv);
-            favoriteBtn = (ImageButton) itemView.findViewById(R.id.favorite_btn);
-            shareBtn = (ImageButton) itemView.findViewById(R.id.share_btn);
 
             favoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
