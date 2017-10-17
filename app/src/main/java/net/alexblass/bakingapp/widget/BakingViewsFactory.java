@@ -15,6 +15,7 @@ import net.alexblass.bakingapp.models.Recipe;
 
 import java.util.List;
 
+import static net.alexblass.bakingapp.data.constants.Keys.INGREDIENT_KEY;
 import static net.alexblass.bakingapp.data.constants.Keys.PREFS_KEY;
 
 /**
@@ -44,11 +45,6 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
     public void onCreate() {
         // Get the saved Recipe from the ConfigurationActivity
         mPrefs = mContext.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-
-        int recipeId = mPrefs.getInt("widget" + mAppWidgetId, -1);
-
-        mSelectedRecipe = RecipeQueryUtils.getRecipe(mContext, recipeId);
-        mIngredients = mSelectedRecipe.getIngredients();
     }
 
     // Required override method
@@ -83,6 +79,10 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
     // Required override method
     @Override
     public void onDataSetChanged() {
+        int recipeId = mPrefs.getInt("widget" + mAppWidgetId, -1);
+
+        mSelectedRecipe = RecipeQueryUtils.getRecipe(mContext, recipeId);
+        mIngredients = mSelectedRecipe.getIngredients();
     }
 
     @Override
@@ -102,15 +102,6 @@ public class BakingViewsFactory implements RemoteViewsService.RemoteViewsFactory
                 Long.toString(mIngredients.get(position).getQuantity()));
         ingredientListing.setTextViewText(R.id.widget_ingredient_measurement_tv,
                 mIngredients.get(position).getMeasurement());
-
-        Intent widgetIntent = new Intent();
-        Bundle extras = new Bundle();
-
-        extras.putParcelable(BakingWidgetProvider.INGREDIENT_KEY, mIngredients.get(position));
-        widgetIntent.putExtras(extras);
-        ingredientListing.setOnClickFillInIntent(R.id.widget_ingredient_name_tv, widgetIntent);
-        ingredientListing.setOnClickFillInIntent(R.id.widget_ingredient_quantity_tv, widgetIntent);
-        ingredientListing.setOnClickFillInIntent(R.id.widget_ingredient_measurement_tv, widgetIntent);
 
         return(ingredientListing);
     }

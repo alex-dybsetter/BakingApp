@@ -9,7 +9,6 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    // TODO: Verify localization requirements
     // TODO: Verify accessibility requirements
     // TODO: Use esspresso tests
     // TODO: On video full screen swipe, show app bars

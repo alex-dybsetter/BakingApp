@@ -3,6 +3,7 @@ package net.alexblass.bakingapp;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.alexblass.bakingapp.data.RecipesContract.RecipeEntry;
+import net.alexblass.bakingapp.widget.BakingWidgetProvider;
 import net.alexblass.bakingapp.widget.WidgetService;
 
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ import java.util.List;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 import static net.alexblass.bakingapp.data.constants.Keys.PREFS_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_NAME_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.WIDGET_ID_KEY;
 
 /**
  * An Activity that allows users to configure their widget settings to choose a Recipe.
@@ -45,9 +49,6 @@ public class ConfigurationActivity extends Activity {
     private int mAppWidgetId;
     // The shared preferences to store our recipe
     SharedPreferences mPrefs;
-
-    // TODO: Show preferences if already saved
-    // TODO: Update preferences if already saved and now overwritten
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +139,11 @@ public class ConfigurationActivity extends Activity {
 
         mRecipeOptions.setAdapter(adapter);
 
+        if (getIntent().hasExtra(RECIPE_NAME_KEY)){
+            int position = adapter.getPosition(getIntent().getStringExtra(RECIPE_NAME_KEY));
+            mRecipeOptions.setSelection(position);
+        }
+
         Button okButton = (Button) findViewById(R.id.okButton);
         okButton.setOnClickListener(new View.OnClickListener() {
 
@@ -158,38 +164,59 @@ public class ConfigurationActivity extends Activity {
         // Get the ID.  It should be the same position as the list of names in
         // the spinner, except offset by 1 for the index 0 = "Select"
         mSelectedRecipeId = mRecipeIdsList.get(mRecipeOptions.getSelectedItemPosition() - 1);
-
         showAppWidget();
     }
 
     private void showAppWidget() {
-        mAppWidgetId = INVALID_APPWIDGET_ID;
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(EXTRA_APPWIDGET_ID,
-                    INVALID_APPWIDGET_ID);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
 
-            AppWidgetProviderInfo providerInfo = AppWidgetManager.getInstance(
-                    getBaseContext()).getAppWidgetInfo(mAppWidgetId);
-            String appWidgetLabel = providerInfo.label;
+        if (getIntent().hasExtra(WIDGET_ID_KEY)){
+            mAppWidgetId = getIntent().getIntExtra(WIDGET_ID_KEY, INVALID_APPWIDGET_ID);
 
-            SharedPreferences.Editor prefsEditor = mPrefs.edit();
             prefsEditor.putInt("widget" + mAppWidgetId, mSelectedRecipeId);
             prefsEditor.commit();
 
-            Intent startService = new Intent(ConfigurationActivity.this,
-                    WidgetService.class);
-            startService.putExtra(EXTRA_APPWIDGET_ID, mAppWidgetId);
-            startService.setAction("FROM CONFIGURATION ACTIVITY");
-            setResult(RESULT_OK, startService);
-            startService(startService);
+            Intent intent = new Intent(this, BakingWidgetProvider.class);
+            intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+            int ids[] = AppWidgetManager.getInstance(
+                    getApplication()).getAppWidgetIds(new ComponentName(getApplication(), BakingWidgetProvider.class));
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+            sendBroadcast(intent);
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+            int appWidgetIds[] = appWidgetManager.getAppWidgetIds(
+                    new ComponentName(this, BakingWidgetProvider.class));
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_ingredients_list);
 
             finish();
-        }
-        if (mAppWidgetId == INVALID_APPWIDGET_ID) {
-            Log.i(ConfigurationActivity.class.getSimpleName(), "Invalid app widget ID");
-            finish();
+        } else {
+            mAppWidgetId = INVALID_APPWIDGET_ID;
+            Intent intent = getIntent();
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                mAppWidgetId = extras.getInt(EXTRA_APPWIDGET_ID,
+                        INVALID_APPWIDGET_ID);
+
+                AppWidgetProviderInfo providerInfo = AppWidgetManager.getInstance(
+                        getBaseContext()).getAppWidgetInfo(mAppWidgetId);
+                String appWidgetLabel = providerInfo.label;
+
+                prefsEditor.putInt("widget" + mAppWidgetId, mSelectedRecipeId);
+                prefsEditor.commit();
+
+                Intent startService = new Intent(ConfigurationActivity.this,
+                        WidgetService.class);
+                startService.putExtra(EXTRA_APPWIDGET_ID, mAppWidgetId);
+                startService.setAction("FROM CONFIGURATION ACTIVITY");
+                setResult(RESULT_OK, startService);
+                startService(startService);
+
+                finish();
+            }
+            if (mAppWidgetId == INVALID_APPWIDGET_ID) {
+                Log.i(ConfigurationActivity.class.getSimpleName(), "Invalid app widget ID");
+                finish();
+            }
         }
     }
 }

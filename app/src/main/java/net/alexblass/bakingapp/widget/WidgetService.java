@@ -8,13 +8,16 @@ import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import net.alexblass.bakingapp.ConfigurationActivity;
 import net.alexblass.bakingapp.R;
 import net.alexblass.bakingapp.RecipeOverviewActivity;
 import net.alexblass.bakingapp.utilities.RecipeQueryUtils;
 import net.alexblass.bakingapp.models.Recipe;
 
 import static net.alexblass.bakingapp.data.constants.Keys.PREFS_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_NAME_KEY;
 import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
+import static net.alexblass.bakingapp.data.constants.Keys.WIDGET_ID_KEY;
 
 public class WidgetService extends RemoteViewsService {
 
@@ -34,11 +37,22 @@ public class WidgetService extends RemoteViewsService {
         RemoteViews widget = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget);
         widget.setTextViewText(R.id.widget_recipe_title, recipe.getName());
 
+        // Launch the ConfigurationActivity when the user clicks the gear button
+        Intent configIntent = new Intent(getApplicationContext(), ConfigurationActivity.class);
+        configIntent.putExtra(RECIPE_NAME_KEY, recipe.getName());
+        configIntent.putExtra(WIDGET_ID_KEY, mAppWidgetId);
+        PendingIntent configPI = PendingIntent
+                .getActivity(getApplicationContext(), mAppWidgetId,
+                        configIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        widget.setOnClickPendingIntent(R.id.widget_settings_btn, configPI);
+
         // Launch the app when the user clicks the launcher button of the widget
         Intent recipeIntent = new Intent(getApplicationContext(), RecipeOverviewActivity.class);
         recipeIntent.putExtra(RECIPE_KEY, recipe);
         PendingIntent recipePI = PendingIntent
-                .getActivity(getApplicationContext(), 0,
+                .getActivity(getApplicationContext(), mAppWidgetId,
                         recipeIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
