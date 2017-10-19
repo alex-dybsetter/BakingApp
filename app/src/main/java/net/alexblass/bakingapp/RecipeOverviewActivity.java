@@ -212,9 +212,10 @@ public class RecipeOverviewActivity<T> extends AppCompatActivity {
                 delete();
                 return true;
             case R.id.action_favorite:
+                mSelectedRecipe.setIsFavorite(!mSelectedRecipe.getIsFavorite());
                 RecipeQueryUtils.updateFavorite(this,
-                        mSelectedRecipe.getDbId(), !mSelectedRecipe.getIsFavorite());
-                item.setChecked(!mSelectedRecipe.getIsFavorite());
+                        mSelectedRecipe.getDbId(), mSelectedRecipe.getIsFavorite());
+                item.setChecked(mSelectedRecipe.getIsFavorite());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
