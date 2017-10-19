@@ -10,7 +10,6 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     // TODO: Verify accessibility requirements
-    // TODO: Use esspresso tests
     // TODO: On video full screen swipe, show app bars
     // TODO: Enable video full screen and shrink screen buttons
     // TODO: Enable view rest of the content on landscape
