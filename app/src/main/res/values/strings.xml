@@ -49,8 +49,10 @@
     <string name="add_step_short_desc">Short Description</string>
     <string name="add_step_long_desc">Detailed Instructions</string>
     <string name="add_btn">Add</string>
-    <string name="delete_btn">x</string>
     <string name="add_Recipe_btn">Add Recipe</string>
+
+    <!--This string should not need translation since it's just the x symbol to remove something-->
+    <string name="delete_btn">x</string>
 
     <string name="incomplete_data_title">Missing Field</string>
     <!--Prompt for when a user tries to save a new recipe with incomplete data-->
@@ -73,5 +75,23 @@
     <string name="delete_prompt">Are you sure you want to delete this entry?</string>
     <string name="deleted_confirmation">Recipe deleted</string>
     <string name="cannot_delete">Only custom recipes can be deleted</string>
+
+    <!--Content descriptions for the add buttons-->
+    <string name="add_ingredient">Add another ingredient to the recipe</string>
+    <string name="add_step">Add another step to the recipe</string>
+    <!--Content descriptions for the delete buttons-->
+    <string name="delete_ingredient">Delete this ingredient from the recipe</string>
+    <string name="delete_step">Delete this step from the recipe</string>
+    <!--Content description for loading bar-->
+    <string name="loading">Loading content. Please wait.</string>
+    <!--Content descriptions for the next and previous step buttons-->
+    <string name="next_step">See the next step.</string>
+    <string name="prev_step">See the previous step.</string>
+    <!--Content descriptions for the card buttons-->
+    <string name="share_btn">Share this recipe.</string>
+    <string name="favorite_btn">Favorite this recipe.</string>
+    <!--Content descriptions for the widget buttons-->
+    <string name="settings">Configuration settings</string>
+    <string name="view">View this recipe.</string>
 
 </resources>

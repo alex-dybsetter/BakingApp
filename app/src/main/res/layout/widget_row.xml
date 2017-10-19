@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/small_padding"
+        android:layout_marginEnd="@dimen/small_padding"
         tools:text="Butter"/>
 
     <TextView
@@ -20,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/small_padding"
+        android:layout_marginEnd="@dimen/small_padding"
         tools:text="1"/>
 
     <TextView

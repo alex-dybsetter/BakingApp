@@ -7,17 +7,22 @@
         android:id="@+id/delete_step_btn"
         style="@style/delete_buttons"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/delete_btn"/>
+        android:text="@string/delete_btn"
+        android:contentDescription="@string/delete_step"/>
 
     <TextView
         android:id="@+id/added_step_short_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_toRightOf="@id/delete_step_btn"
+        android:layout_toEndOf="@id/delete_step_btn"
         android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginEnd="@dimen/horizontal_margin"
         android:layout_marginBottom="@dimen/small_padding"
         android:layout_marginTop="@dimen/small_padding"/>
 
