@@ -4,12 +4,12 @@ designed with a responsive layout that is optimized for phones and tablet device
 to view video steps and onscreen widgets. 
 Technologies used: Widgets, SQLite Databases, Content Providers, Udacity recipe API, Fragments, Butterknife, ExoPlayer, Espresso tests, GestureDetector, Picasso
 
-#Installation
-`git clone https://github.com/alexblass/BakingApp
+# Installation
+`git clone https://github.com/alexblass/BakingApp`
 
-`cd BakingApp/
+`cd BakingApp/`
 
-##3rd Party Libs Credits
+## 3rd Party Libs Credits
 
 Butterknife by Jake Wharton: https://github.com/JakeWharton/butterknife
 
