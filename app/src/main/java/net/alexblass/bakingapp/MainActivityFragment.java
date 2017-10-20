@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,6 +31,9 @@ public class MainActivityFragment extends Fragment
         implements RecipeAdapter.ItemClickListener,
         LoaderManager.LoaderCallbacks<Recipe[]>{
 
+    // The number of columns in the grid recyclerview on tablets
+    private static final int NUMBER_OF_COLS = 3;
+
     // The ID for the recipe loader
     private static final int RECIPE_LOADER_ID = 0;
 
@@ -43,8 +47,10 @@ public class MainActivityFragment extends Fragment
 
     // A RecyclerView to display all the Recipe cards
     @BindView(R.id.recipes_rv) RecyclerView mRecyclerView;
-    // The LinearLayoutManager to display recipes in a list
-    private LinearLayoutManager mLayoutManager;
+    // The LinearLayoutManager to display recipes in a list on phones
+    private LinearLayoutManager mLinearLayoutManager;
+    // The GridLayoutManager to display recipes in a grid on tablets
+    private GridLayoutManager mGridLayoutManager;
 
     // A RecipeAdapter to display the Recipes correctly
     private RecipeAdapter mAdapter;
@@ -62,11 +68,15 @@ public class MainActivityFragment extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, rootView);
 
-        // Find the RecyclerView and set our adapter to it so the recipes
-        // display in a vertical linear layout format.
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        // Find the RecyclerView and set our adapter to it to display the recipes
+        if (getResources().getBoolean(R.bool.isTablet)){
+            mGridLayoutManager = new GridLayoutManager(getActivity(), NUMBER_OF_COLS);
+            mRecyclerView.setLayoutManager(mGridLayoutManager);
+        } else {
+            mLinearLayoutManager = new LinearLayoutManager(getActivity());
+            mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        }
         mRecyclerView.setHasFixedSize(true);
 
         mAdapter = new RecipeAdapter(getActivity(), new Recipe[0]);

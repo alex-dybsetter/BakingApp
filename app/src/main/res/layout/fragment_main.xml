@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:layout_margin="@dimen/parent_margin"/>
+        android:layout_margin="@dimen/recyclerview_margin"/>
 
     <TextView
         android:id="@+id/error_message_tv"
