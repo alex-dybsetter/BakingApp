@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -67,6 +70,9 @@ public class RecipeStepDetailFragment extends Fragment
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener {
 
+    // Keys for our saved instance state
+    public String SELECTED_POSITION_KEY = "mPlayerPosition";
+
     // The selected RecipeStep
     private RecipeStep mSelectedStep;
 
@@ -85,6 +91,8 @@ public class RecipeStepDetailFragment extends Fragment
     private SimpleExoPlayerView mPlayerView;
 
     private SimpleExoPlayer mExoPlayer;
+    private Uri mStepVideoUri;
+    private long mPlayerPosition;
 
     // To detect when the player flings the full screen player
     private GestureDetector mGestureDetector;
@@ -111,25 +119,6 @@ public class RecipeStepDetailFragment extends Fragment
             if (bundle.getParcelable(RECIPE_STEP_KEY) != null) {
                 mSelectedStep = bundle.getParcelable(RECIPE_STEP_KEY);
 
-                BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-                TrackSelection.Factory videoTrackSelectionFactory =
-                        new AdaptiveVideoTrackSelection.Factory(bandwidthMeter);
-                TrackSelector trackSelector =
-                        new DefaultTrackSelector(videoTrackSelectionFactory);
-                LoadControl loadControl = new DefaultLoadControl();
-
-                mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
-
-                mPlayerView.setPlayer(mExoPlayer);
-                mPlayerView.setKeepScreenOn(true);
-
-                mGestureDetector = new GestureDetector(getActivity(), this);
-
-                DataSource.Factory dataSourceFactory =
-                        new DefaultDataSourceFactory(getActivity(), Util.getUserAgent(getActivity(), "ExoPlayer"));
-
-                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
                 mTitleTv.setText(mSelectedStep.getShortDescription());
                 mDescriptionTv.setText(mSelectedStep.getDescription());
 
@@ -138,7 +127,6 @@ public class RecipeStepDetailFragment extends Fragment
 
                 NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
                 boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
-
 
                 // Only display the video or image if there is Internet connection
                 if (isConnected) {
@@ -154,12 +142,14 @@ public class RecipeStepDetailFragment extends Fragment
 
                     // Check if there is a video to the step
                     if (!mSelectedStep.getVideoUrl().equals("")) {
+                        mStepVideoUri = Uri.parse(mSelectedStep.getVideoUrl());
+                        initializePlayer(mStepVideoUri);
+                        mGestureDetector = new GestureDetector(getActivity(), this);
 
                         // If the device is in landscape and is not a tablet, make the video full screen
                         if (!getResources().getBoolean(R.bool.isTablet)) {
                             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                                ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+                                hideAppBar();
 
                                 mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
 
@@ -171,19 +161,9 @@ public class RecipeStepDetailFragment extends Fragment
                                     }
                                 });
                             } else {
-                                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                                ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+                                showAppBar();
                             }
                         }
-
-                        Uri vidUri = Uri.parse(mSelectedStep.getVideoUrl());
-
-                        MediaSource videoSource = new ExtractorMediaSource(vidUri,
-                                dataSourceFactory, extractorsFactory, null, null);
-
-                        mExoPlayer.addListener(this);
-                        mExoPlayer.prepare(videoSource);
-                        mExoPlayer.setPlayWhenReady(true);
                     }
 
                     // If there's no video or image, hide the loading indicator
@@ -234,6 +214,18 @@ public class RecipeStepDetailFragment extends Fragment
         return rootView;
     }
 
+    // Hide the app bar
+    private void hideAppBar(){
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+    }
+
+    // Show the app bar
+    private void showAppBar(){
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+    }
+
     // Create a new StepDetailFragment
     private void launchNewFragment(Recipe recipe, RecipeStep step){
         int layoutId;
@@ -259,31 +251,53 @@ public class RecipeStepDetailFragment extends Fragment
                 .commit();
     }
 
-    // Pause the video when the player is not in focus
+    // Initialize the player
+    private void initializePlayer(Uri vidUri){
+        if (mExoPlayer == null){
+            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveVideoTrackSelection.Factory(bandwidthMeter);
+            TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+            LoadControl loadControl = new DefaultLoadControl();
+
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getActivity(), Util.getUserAgent(getActivity(), "ExoPlayer"));
+            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+
+            MediaSource videoSource = new ExtractorMediaSource(vidUri, dataSourceFactory, extractorsFactory, null, null);
+
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
+            mExoPlayer.addListener(this);
+
+
+            if (mPlayerPosition != C.TIME_UNSET) {
+                mExoPlayer.seekTo(mPlayerPosition);
+            }
+            mExoPlayer.prepare(videoSource);
+            mExoPlayer.setPlayWhenReady(true);
+
+            mPlayerView.setPlayer(mExoPlayer);
+            mPlayerView.setKeepScreenOn(true);
+        }
+    }
+
+    // Release the player but save the position
     @Override
     public void onPause() {
         super.onPause();
         if (mExoPlayer != null) {
-            mExoPlayer.setPlayWhenReady(false);
+            mPlayerPosition = mExoPlayer.getCurrentPosition();
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
         }
     }
 
-    // Required override method
+    // Start the player
     @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
-
-    }
-
-    // Required override method
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-    }
-
-    // Required override method
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-
+    public void onResume() {
+        super.onResume();
+        if (mStepVideoUri != null) {
+            initializePlayer(mStepVideoUri);
+        }
     }
 
     // The ExoPlayer video states
@@ -321,36 +335,51 @@ public class RecipeStepDetailFragment extends Fragment
         ad.show();
     }
 
-    // Required Override method
-    @Override
+    @Override // Required Override method
     public void onPositionDiscontinuity() {
 
     }
 
-    // Required override method
-    @Override
+    @Override // Required override method
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    @Override // Required override method
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
+
+    @Override // Required override method
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override // Required override method
     public void onDestroy() {
         super.onDestroy();
-        mExoPlayer.release();
     }
 
-    // Required override method
     @Override
-    public boolean onSingleTapConfirmed(MotionEvent e) {
-        return false;
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putLong(SELECTED_POSITION_KEY, mPlayerPosition);
+        super.onSaveInstanceState(outState);
     }
 
-    // Required override method
     @Override
-    public boolean onDoubleTap(MotionEvent e) {
-        return false;
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SELECTED_POSITION_KEY)) {
+                mPlayerPosition = savedInstanceState.getLong(SELECTED_POSITION_KEY);
+            }
+        }
     }
 
     // When the user double taps, make the player full screen again
     @Override
     public boolean onDoubleTapEvent(MotionEvent e) {
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        hideAppBar();
 
         mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
 
@@ -364,43 +393,12 @@ public class RecipeStepDetailFragment extends Fragment
         return true;
     }
 
-    // Required override method
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return true;
-    }
-
-    // Required override method
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    // Required override method
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    // Required override method
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    // Required override method
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
     // When the user flings the player (swipes in any direction) the player should go from
     // full screen to within the fragment.
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         // Show the app bar
-        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        showAppBar();
 
         // Resize the layout containing the player
         ViewGroup.LayoutParams params = mPlayerLayout.getLayoutParams();
@@ -415,5 +413,40 @@ public class RecipeStepDetailFragment extends Fragment
         mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 
         return true;
+    }
+
+    @Override // Required override method
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override // Required override method
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override // Required override method
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override // Required override method
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override // Required override method
+    public boolean onDown(MotionEvent e) {
+        return true;
+    }
+
+    @Override // Required override method
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        return false;
+    }
+
+    @Override // Required override method
+    public boolean onDoubleTap(MotionEvent e) {
+        return false;
     }
 }
