@@ -2,91 +2,98 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     tools:context="net.alexblass.bakingapp.RecipeStepDetailFragment">
 
-    <LinearLayout
-        android:id="@+id/rich_media"
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ProgressBar
             android:id="@+id/loading_indicator_step_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:layout_margin="@dimen/horizontal_margin"
-            android:visibility="visible"
-            android:contentDescription="@string/loading"/>
+            android:contentDescription="@string/loading"
+            android:visibility="visible" />
 
-        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-            android:id="@+id/step_video_exoplayer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:resize_mode="fill"
-            android:layout_marginBottom="@dimen/zero"
-            android:layout_marginTop="@dimen/zero"
-            android:layout_marginLeft="@dimen/zero"
-            android:layout_marginRight="@dimen/zero"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/step_thumbnail_imageview"
+        <LinearLayout
+            android:id="@+id/rich_media"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/small_padding"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            android:contentDescription="@null"/>
+            android:orientation="vertical"
+            android:visibility="invisible">
 
-        <TextView
-            android:id="@+id/step_description_title_tv"
-            style="@style/stepTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:layout_marginBottom="@dimen/small_padding"
-            android:layout_marginLeft="@dimen/horizontal_margin"
-            android:layout_marginRight="@dimen/horizontal_margin"/>
+            <include
+                android:id="@+id/player_layout"
+                layout="@layout/fragment_recipe_step_player_fullscreen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/zero"
+                android:layout_marginLeft="@dimen/zero"
+                android:layout_marginRight="@dimen/zero"
+                android:layout_marginTop="@dimen/zero"
+                android:layout_gravity="center"
+                android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/step_description_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/horizontal_margin"
-            android:layout_marginRight="@dimen/horizontal_margin"/>
+            <ImageView
+                android:id="@+id/step_thumbnail_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/small_padding"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/vertical_margin">
-
-            <Button
-                android:id="@+id/prev_step_btn"
-                style="@style/nav_buttons"
+            <TextView
+                android:id="@+id/step_description_title_tv"
+                style="@style/stepTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/prev_btn"
-                android:contentDescription="@string/prev_step"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"/>
+                android:layout_marginBottom="@dimen/small_padding"
+                android:layout_marginLeft="@dimen/horizontal_margin"
+                android:layout_marginRight="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/small_padding" />
 
-            <Button
-                android:id="@+id/next_step_btn"
-                style="@style/nav_buttons"
+            <TextView
+                android:id="@+id/step_description_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/next_btn"
-                android:contentDescription="@string/next_step"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"/>
+                android:layout_marginLeft="@dimen/horizontal_margin"
+                android:layout_marginRight="@dimen/horizontal_margin" />
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/vertical_margin">
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/prev_step_btn"
+                    style="@style/nav_buttons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:contentDescription="@string/prev_step"
+                    android:text="@string/prev_btn" />
+
+                <Button
+                    android:id="@+id/next_step_btn"
+                    style="@style/nav_buttons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:contentDescription="@string/next_step"
+                    android:text="@string/next_btn" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </ScrollView>

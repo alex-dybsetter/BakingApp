@@ -10,12 +10,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,6 +40,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -57,7 +62,10 @@ import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_STEP_KEY;
  * This Fragment allows users to view the detailed information about a RecipeStep.
  */
 
-public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.EventListener {
+public class RecipeStepDetailFragment extends Fragment
+        implements ExoPlayer.EventListener,
+        GestureDetector.OnGestureListener,
+        GestureDetector.OnDoubleTapListener {
 
     // The selected RecipeStep
     private RecipeStep mSelectedStep;
@@ -66,15 +74,20 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     private Recipe mSelectedRecipe;
 
     // The views in the StepDetail layout
+    @BindView(R.id.rich_media) LinearLayout mRichMedia;
     @BindView(R.id.step_description_title_tv) TextView mTitleTv;
     @BindView(R.id.step_description_tv) TextView mDescriptionTv;
     @BindView(R.id.step_thumbnail_imageview) ImageView mThumbnailImageView;
-    @BindView(R.id.step_video_exoplayer) SimpleExoPlayerView mPlayerView;
     @BindView(R.id.loading_indicator_step_detail) ProgressBar mLoadingIndicator;
     @BindView(R.id.prev_step_btn) Button mPrevBtn;
     @BindView(R.id.next_step_btn) Button mNextBtn;
+    @BindView(R.id.player_layout) LinearLayout mPlayerLayout;
+    private SimpleExoPlayerView mPlayerView;
 
     private SimpleExoPlayer mExoPlayer;
+
+    // To detect when the player flings the full screen player
+    private GestureDetector mGestureDetector;
 
     // Empty constructor
     public RecipeStepDetailFragment() {
@@ -84,6 +97,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
         ButterKnife.bind(this, rootView);
+        mPlayerView = ButterKnife.findById(mPlayerLayout, R.id.step_video_exoplayer);
 
         // Clear any old views to avoid overlaying Fragment layouts
         if (container != null) {
@@ -108,6 +122,8 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
                 mPlayerView.setPlayer(mExoPlayer);
                 mPlayerView.setKeepScreenOn(true);
+
+                mGestureDetector = new GestureDetector(getActivity(), this);
 
                 DataSource.Factory dataSourceFactory =
                         new DefaultDataSourceFactory(getActivity(), Util.getUserAgent(getActivity(), "ExoPlayer"));
@@ -144,6 +160,16 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
                             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                                 getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                                 ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
+                                mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+
+                                mPlayerView.setOnTouchListener(new View.OnTouchListener() {
+                                    @Override
+                                    public boolean onTouch(View v, final MotionEvent event) {
+                                        mGestureDetector.onTouchEvent(event);
+                                        return true;
+                                    }
+                                });
                             } else {
                                 getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                                 ((AppCompatActivity) getActivity()).getSupportActionBar().show();
@@ -254,6 +280,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
     }
 
+    // Required override method
     @Override
     public void onLoadingChanged(boolean isLoading) {
 
@@ -270,7 +297,8 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             case ExoPlayer.STATE_READY:
                 // When the video is ready to play, make it visible
                 mLoadingIndicator.setVisibility(View.GONE);
-                mPlayerView.setVisibility(View.VISIBLE);
+                mRichMedia.setVisibility(View.VISIBLE);
+                mPlayerLayout.setVisibility(View.VISIBLE);
                 break;
             case ExoPlayer.STATE_ENDED:
                 break;
@@ -299,9 +327,93 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
     }
 
+    // Required override method
     @Override
     public void onDestroy() {
         super.onDestroy();
         mExoPlayer.release();
+    }
+
+    // Required override method
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        return false;
+    }
+
+    // Required override method
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        return false;
+    }
+
+    // When the user double taps, make the player full screen again
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
+        mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+
+        // Resize the layout containing the player
+        ViewGroup.LayoutParams params = mPlayerLayout.getLayoutParams();
+
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        mPlayerLayout.setLayoutParams(params);
+
+        return true;
+    }
+
+    // Required override method
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return true;
+    }
+
+    // Required override method
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    // Required override method
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    // Required override method
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    // Required override method
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    // When the user flings the player (swipes in any direction) the player should go from
+    // full screen to within the fragment.
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        // Show the app bar
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+
+        // Resize the layout containing the player
+        ViewGroup.LayoutParams params = mPlayerLayout.getLayoutParams();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+
+        params.height = height / 2;
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mPlayerLayout.setLayoutParams(params);
+        mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+
+        return true;
     }
 }

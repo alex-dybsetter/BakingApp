@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     tools:context="net.alexblass.bakingapp.RecipeStepDetailFragment">
 
@@ -21,16 +20,17 @@
             android:visibility="visible"
             android:contentDescription="@string/loading"/>
 
-        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-            android:id="@+id/step_video_exoplayer"
+        <include
+            android:id="@+id/player_layout"
+            layout="@layout/fragment_recipe_step_player_fullscreen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:resize_mode="fit"
             android:layout_marginBottom="@dimen/small_padding"
             android:layout_marginTop="@dimen/vertical_margin"
             android:layout_marginLeft="@dimen/horizontal_margin"
             android:layout_marginRight="@dimen/horizontal_margin"
-            android:visibility="gone" />
+            android:layout_gravity="center"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/step_thumbnail_imageview"
