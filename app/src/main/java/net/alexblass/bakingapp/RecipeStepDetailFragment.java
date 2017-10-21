@@ -174,6 +174,8 @@ public class RecipeStepDetailFragment extends Fragment
                                 showAppBar();
                             }
                         }
+                    } else {
+                        mRichMedia.setVisibility(View.VISIBLE);
                     }
 
                     // If there's no video or image, hide the loading indicator
@@ -373,6 +375,8 @@ public class RecipeStepDetailFragment extends Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putLong(SELECTED_POSITION_KEY, mPlayerPosition);
+        outState.putParcelable(RECIPE_KEY, mSelectedRecipe);
+        outState.putParcelable(RECIPE_STEP_KEY, mSelectedStep);
         super.onSaveInstanceState(outState);
     }
 
@@ -382,6 +386,12 @@ public class RecipeStepDetailFragment extends Fragment
         if(savedInstanceState != null) {
             if (savedInstanceState.containsKey(SELECTED_POSITION_KEY)) {
                 mPlayerPosition = savedInstanceState.getLong(SELECTED_POSITION_KEY);
+            }
+            if (savedInstanceState.containsKey(RECIPE_KEY)){
+                mSelectedRecipe = savedInstanceState.getParcelable(RECIPE_KEY);
+            }
+            if (savedInstanceState.containsKey(RECIPE_STEP_KEY)){
+                mSelectedStep = savedInstanceState.getParcelable(RECIPE_STEP_KEY);
             }
         }
     }

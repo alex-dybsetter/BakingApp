@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,9 +31,6 @@ import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
 public class MainActivityFragment extends Fragment
         implements RecipeAdapter.ItemClickListener,
         LoaderManager.LoaderCallbacks<Recipe[]>{
-
-    // The number of columns in the grid recyclerview on tablets
-    private static final int NUMBER_OF_COLS = 3;
 
     // The ID for the recipe loader
     private static final int RECIPE_LOADER_ID = 0;
@@ -70,7 +68,8 @@ public class MainActivityFragment extends Fragment
 
         // Find the RecyclerView and set our adapter to it to display the recipes
         if (getResources().getBoolean(R.bool.isTablet)){
-            mGridLayoutManager = new GridLayoutManager(getActivity(), NUMBER_OF_COLS);
+            int numberOfCols = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2;
+            mGridLayoutManager = new GridLayoutManager(getActivity(), numberOfCols);
             mRecyclerView.setLayoutManager(mGridLayoutManager);
         } else {
             mLinearLayoutManager = new LinearLayoutManager(getActivity());
