@@ -3,29 +3,29 @@ package net.alexblass.bakingapp;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import net.alexblass.bakingapp.models.Group;
 import net.alexblass.bakingapp.models.Recipe;
 import net.alexblass.bakingapp.models.RecipeStep;
-import net.alexblass.bakingapp.utilities.ExpandableListAdapter;
+import net.alexblass.bakingapp.utilities.ExpandableRecipeAdapter;
 import net.alexblass.bakingapp.utilities.RecipeQueryUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import static android.R.attr.id;
 import static android.support.v4.app.NavUtils.navigateUpFromSameTask;
 import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_KEY;
-import static net.alexblass.bakingapp.data.constants.Keys.RECIPE_STEP_KEY;
 
 /**
  * The activity that displays the detailed information about a Recipe.
@@ -39,21 +39,21 @@ public class RecipeOverviewActivity<T> extends AppCompatActivity {
     // The selected RecipeStep
     RecipeStep mSelectedStep;
 
-    // An expandable list adapter to display the detail data of a recipe,
+    // An expandable recycler view adapter to display the detail data of a recipe,
     // such as the list of ingredients and the list of steps.
-    private ExpandableListAdapter mAdapter;
+    private ExpandableRecipeAdapter mAdapter;
 
-    // The ExpandableListView to display all the Ingredients and RecipeSteps
-    private ExpandableListView mExpListView;
+    // The RecyclerView to display all the Ingredients and RecipeSteps
+    private RecyclerView mRecyclerView;
 
-    // A list to hold the titles of each section
-    private List<String> mSectionTitleList;
-
-    // A list to hold the section children data
-    private HashMap<String, List<T>> mSectionChildList;
+    // A list of groups for ingredients and steps
+    private List<Group> mGroups;
 
     // Determines if the app is running in two-pane view on a Tablet
     private boolean mTwoPane;
+
+    // The fragment created by a click on the recycler view
+    private RecipeStepDetailFragment mStepDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,77 +71,61 @@ public class RecipeOverviewActivity<T> extends AppCompatActivity {
                 getSupportActionBar().show();
                 getSupportActionBar().setTitle(mSelectedRecipe.getName());
 
-                mExpListView = (ExpandableListView) findViewById(R.id.expandableList);
+                mRecyclerView = (RecyclerView) findViewById(R.id.expandableList);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-                mSectionTitleList = new ArrayList<>();
-                mSectionChildList = new HashMap<>();
+                mGroups = new ArrayList<>();
+                mGroups.add(new Group(getString(R.string.ingredients_title), mSelectedRecipe.getIngredients()));
+                mGroups.add(new Group(getString(R.string.steps_title), mSelectedRecipe.getSteps()));
 
-                mSectionTitleList.add(getString(R.string.ingredients_title));
-                mSectionTitleList.add(getString(R.string.steps_title));
+                mAdapter = new ExpandableRecipeAdapter(this, mGroups);
 
-                mSectionChildList.put(mSectionTitleList.get(0), (List<T>) mSelectedRecipe.getIngredients());
-                mSectionChildList.put(mSectionTitleList.get(1), (List<T>) mSelectedRecipe.getSteps());
+                mRecyclerView.setLayoutManager(layoutManager);
+                mRecyclerView.setAdapter(mAdapter);
 
-                mAdapter = new ExpandableListAdapter(this, mSectionTitleList, mSectionChildList);
-
-                mExpListView.setAdapter(mAdapter);
-
-                for (int i = 0; i < mAdapter.getGroupCount(); i++) {
-                    mExpListView.expandGroup(i);
+                for (int i = mAdapter.getGroups().size() - 1; i >= 0; i--) {
+                    expandGroup(i);
                 }
 
-                mExpListView
-                        .setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                if (findViewById(R.id.recipe_step_container) != null) {
+                    mTwoPane = true;
+                }
 
-                            @Override
-                            public boolean onChildClick(
-                                    ExpandableListView parent, View v,
-                                    int groupPosition, int childPosition,
-                                    long id) {
+                mAdapter.setChildClickListener(new ExpandableRecipeAdapter.ItemClickListener() {
+                    @Override
+                    public void onChildItemClick(View view, int position) {
+                        mStepDetailFragment = RecipeStepDetailFragment.newInstance(mSelectedRecipe, mAdapter.getStep());
 
-                                mSelectedStep = (RecipeStep)
-                                        mAdapter.getChild(groupPosition, childPosition);
+                        if (mTwoPane) {
+                            // Make sure the ActionBar is showing and has the title of the Recipe
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                            getSupportActionBar().show();
+                            getSupportActionBar().setTitle(mSelectedRecipe.getName());
 
-                                if (mTwoPane) {
-                                    // Make sure the ActionBar is showing and has the title of the Recipe
-                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                                    getSupportActionBar().show();
-                                    getSupportActionBar().setTitle(mSelectedRecipe.getName());
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.recipe_step_container, mStepDetailFragment)
+                                    .commit();
+                        } else {
 
-                                    Bundle args = new Bundle();
-                                    args.putParcelable(RECIPE_STEP_KEY, mSelectedStep);
-                                    args.putParcelable(RECIPE_KEY, mSelectedRecipe);
-
-                                    RecipeStepDetailFragment stepDetailFragment = new RecipeStepDetailFragment();
-                                    stepDetailFragment.setArguments(args);
-
-                                    getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .replace(R.id.recipe_step_container, stepDetailFragment)
-                                            .commit();
-                                } else {
-                                    Bundle args = new Bundle();
-                                    args.putParcelable(RECIPE_STEP_KEY, mSelectedStep);
-                                    args.putParcelable(RECIPE_KEY, mSelectedRecipe);
-
-                                    RecipeStepDetailFragment stepDetailFragment = new RecipeStepDetailFragment();
-                                    stepDetailFragment.setArguments(args);
-
-                                    getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .replace(R.id.fragment_container, stepDetailFragment)
-                                            .addToBackStack(null)
-                                            .commit();
-                                }
-                                return false;
-                            }
-                        });
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_container, mStepDetailFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    }
+                });
             }
         }
+    }
 
-        if (findViewById(R.id.recipe_step_container) != null) {
-            mTwoPane = true;
+    // Expand all the groups on launch activity
+    public void expandGroup (int gPos){
+        if(mAdapter.isGroupExpanded(gPos)){
+            return;
         }
+        mAdapter.toggleGroup(gPos);
     }
 
     private void delete(){
@@ -221,5 +205,17 @@ public class RecipeOverviewActivity<T> extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        mAdapter.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mAdapter.onRestoreInstanceState(savedInstanceState);
     }
 }

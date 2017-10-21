@@ -101,6 +101,16 @@ public class RecipeStepDetailFragment extends Fragment
     public RecipeStepDetailFragment() {
     }
 
+    // Static factory method to initialize the fragment with the correct arguments
+    public static RecipeStepDetailFragment newInstance(Recipe recipe, RecipeStep step) {
+        RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(RECIPE_STEP_KEY, step);
+        args.putParcelable(RECIPE_KEY, recipe);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);

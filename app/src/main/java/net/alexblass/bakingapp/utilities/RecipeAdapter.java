@@ -95,12 +95,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         .into(holder.image);
             }
 
-            int imgId;
-            if (selectedRecipe.getIsFavorite()){
-                imgId = R.drawable.ic_favorite_white_24dp;
-            } else {
-                imgId = R.drawable.ic_favorite_border_white_24dp;
-            }
+            int imgId = selectedRecipe.getIsFavorite() ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp;
 
             holder.favoriteBtn.setImageResource(imgId);
         }

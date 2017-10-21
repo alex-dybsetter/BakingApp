@@ -18,3 +18,7 @@ License: http://www.apache.org/licenses/LICENSE-2.0
 Picasso by Square: http://square.github.io/picasso/
 
 License: http://www.apache.org/licenses/LICENSE-2.0
+
+ExpandableRecyclerView by ThoughtBot: https://github.com/thoughtbot/expandable-recycler-view
+
+License: https://github.com/thoughtbot/expandable-recycler-view/blob/master/LICENSE 
